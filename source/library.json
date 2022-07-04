@@ -1,0 +1,14 @@
+{
+  "name": "Notebooks",
+  "version": "1.0.0",
+  "website": "",
+  "gitUrl": "",
+  "authors": ["tdue21", "rtakehara"],
+  "license": "MIT",
+  "namespace": "net.dovesoft.notebook",
+  "description": "A MapTool add-on that adds notebook functionality to MapTool.",
+  "shortDescription": "MapTool Noteboks",
+  "allowsUriAccess": true,
+  "licenseFile": "license.txt",
+  "readMeFile": "readme.md"
+}
