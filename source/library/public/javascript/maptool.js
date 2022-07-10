@@ -1,4 +1,5 @@
-async function fetchFromMacro(uri) {
+async function fetchFromMacro(macro) {
+    let uri = "macro:" + macro + "@lib:net.dovesoft.notebook"
     let p = fetch(uri, {method: "POST"})
     let r = await p
     let data = await r.json()
@@ -9,23 +10,26 @@ async function fetchFromMacro(uri) {
  * Fetches MapTool data to use on the help page.
  */
 async function fetchHelpData() {
-    return fetchFromMacro("macro:GetHelpData@lib:net.dovesoft.notebook")
+    return fetchFromMacro("GetHelpData")
 }
 
 /**
  * Fetches library info from MapTool
  */
 async function fetchLibraryData() {
-    return fetchFromMacro("macro:GetLibraryData@lib:net.dovesoft.notebook")
+    return fetchFromMacro("GetLibraryData")
 }
 
 /**
  * List of all notebooks
  */
 async function fetchNotebookList() {
-    return fetchFromMacro("macro:ListNotebooks@lib:net.dovesoft.notebook")
+    return fetchFromMacro("ListNotebooks")
 }
 
+async function fetchSetupData() {
+    return fetchFromMacro("GetSetupData")
+}
 /** 
  * Sets up binding for controls
  */

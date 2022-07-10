@@ -5,7 +5,11 @@
         <script src="../javascript/maptool.js?cachelib=false"></script>
         <style type="text/css">
             td:first-child {
-                width:25%;
+                width:35%;
+            }
+            tr, td {
+                margin:0px;
+                padding:0px;
             }
             tr:nth-child(even) {
                 background-color: #efefef;
@@ -17,16 +21,16 @@
     </head>
 
     <body>
-        <form id="setup" name="setup" action="" method="post">
-            <table>
+        <form id="setup" name="setup" action="macro://ProcessSetup@lib:net.dovesoft.notebook/none/impersonated?" method="post">
+            <table style="border-collapse: collapse;">
                 <tr>
-                    <td><label for="theme">Default Theme</label></td>
-                    <td><select id="theme" name="theme"></select></td>
+                    <td><label for="defaultTheme">Default Theme</label></td>
+                    <td><select id="defaultTheme" name="defaultTheme"></select></td>
                 </tr>
 
                 <tr>
-                    <td><label for="pcOut">PC Output</label></td>
-                    <td><select id="pcOut" name="pcOut">
+                    <td><label for="pcOutput">PC Output</label></td>
+                    <td><select id="pcOutput" name="pcOutput">
                         <option selected>all</option>
                         <option>self</option>
                         <option>gm</option>
@@ -36,8 +40,8 @@
                 </tr>
 
                 <tr>
-                    <td><label for="gmOut">GM Output</label></td>
-                    <td><select id="gmOut" name="gmOut">
+                    <td><label for="gmOutput">GM Output</label></td>
+                    <td><select id="gmOutput" name="gmOutput">
                         <option>all</option>
                         <option selected>self</option>
                         <option>gm</option>
@@ -84,21 +88,33 @@
                 </tr>
 
                 <tr>
-                    <td><label for="loadStart">Load on Startup</label></td>
-                    <td><input type="checkbox" id="loadStart" name="loadStart" value="1"></td>
+                    <td><label for="loadOnStart">Load on Startup</label></td>
+                    <td><input type="checkbox" id="loadOnStart" name="loadOnStart" value="1"></td>
                 </tr>
 
                 <tr>
                     <td colspan="2" style="text-align: right;">
-                        <button type="submit" id="submit" name="submit">Ok</button>
-                        <button type="reset" id="reset" name="reset">Cancel</button>
+                        <button type="submit" id="submit" name="submit" value="ok">Ok</button>
+                        <button type="submit" id="reset" name="reset"" value="cancel">Cancel</button>
                     </td>
                 </tr>
             </table>
         </form>
 
         <script>
-
+            (async () => {
+                let data = await fetchSetupData()
+                for(let key in data) {
+                    if(data.hasOwnProperty(key)) {
+                        let element = document.getElementById(key)
+                        if(element.getAttribute("type") === "checkbox") {
+                            element.checked = data[key] === "1"
+                        } else {
+                            element.value = data[key]
+                        }
+                    }
+                }
+        })();
         </script>
     </body>
 </html>

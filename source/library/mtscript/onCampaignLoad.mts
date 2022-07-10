@@ -5,5 +5,4 @@
 [h:defineFunction("notebook.setup", "Setup@lib:net.dovesoft.Notebook")]
 [h:defineFunction("notebook.about", "About@lib:net.dovesoft.Notebook")]
 
-[h:macro()]
 [h:broadcast("OnCampaignLoad done")]
