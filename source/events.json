@@ -1,5 +1,12 @@
 {
   "events": [
-    { "name": "onInit", "mts": "onCampaignLoad" }
+    {
+      "name": "onFirstInit",
+      "mts": "onInitializeLibrary"
+    },
+    {
+      "name": "onInit",
+      "mts": "onCampaignLoad"
+    }
   ]
-} 
+}

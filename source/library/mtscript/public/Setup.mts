@@ -1,0 +1,1 @@
+[h:html.dialog5("Notebook Setup", "lib://net.dovesoft.notebook/html/setup.html", "width=400; height=350; temporary=1; noframe=0; input=1")]

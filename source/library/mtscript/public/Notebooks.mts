@@ -1,1 +1,1 @@
-[macro("Show Notebooks@Lib:Notebook"):""]
+[macro("Show_Notebooks@Lib:net.dovesoft.Notebook"):""]

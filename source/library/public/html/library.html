@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <link rel="stylesheet" type="text/css" href="../css/Elegant.css?cachelib=false">
+    <script src="../javascript/maptool.js?cachelib=false"></script>
+    <style type="text/css">
+        h1 {
+            font-size: 12pt;
+        }
+
+        input[type=submit] {
+            width: 95%;
+            border: 1px solid black;
+            background-color: #dedede;
+            color: black;
+            padding: 2px;
+            margin: 0px;
+            margin-left: 5px;
+            margin-bottom: 5px;
+            height: 25px;
+        }
+    </style>
+</head>
+
+<body>
+    
+
+    <form action="[r:processorLink]" method="json">
+        <h1>Create</h1>
+        <input type="submit" name="NewNotebook" value="New Notebook">
+        <h1>Read</h1>
+
+        <input type="submit" name="[r:currentNote]" value="[r:CurrentName]">
+        <br>
+
+        <input type="hidden" name="NoteList" value="[r:encode(ListNotes)]">
+    </form>
+</body>
+
+</html>

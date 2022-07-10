@@ -6,7 +6,7 @@
 [h,foreach(currentLib, libList, ""),code:{
 	[h:settingsProp=getLibProperty("Settings",currentLib)]
 	[h,if(json.type(settingsProp)=="UNKNOWN"):fields="";fields=json.fields(settingsProp)]
-	[h,if(fields=="theme"):"";list=listdelete(list,listfind(list,currentLib))]
+	[h,if(listfind(fields, "theme") >= 0):"";list=listdelete(list,listfind(list,currentLib))]
 }]
 
 [h:ListNotes=""]
@@ -30,7 +30,7 @@
 [dialog5("Notebooks", "width=220; height="+height+"; temporary=1; noframe=0; input=1"):{
 <html>
 <head>
-	<link rel="stylesheet" type="text/css" href="GitHub@Lib:Notebook">
+	<link rel="stylesheet" type="text/css" href="../public/css/Github5.css">
 	
 [r:'<style type="text/css">
 	h1 {
@@ -51,7 +51,7 @@
 	</style>']
 </head>
 <body>
-	[h:processorLink=macroLinkText("Menu process@Lib:Notebook","")]
+	[h:processorLink=macroLinkText("Menu process@Lib:net.dovesoft.notebook","")]
 	<form action="[r:processorLink]" method="json">
 		<h1>Create</h1>
 		<input type="submit" name="NewNotebook" value="New Notebook">

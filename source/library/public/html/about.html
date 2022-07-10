@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link rel="stylesheet" type="text/css" href="../css/Elegant.css?cachelib=false">
+    <script src="../javascript/maptool.js?cachelib=false"></script>
+</head>
+
+<body>
+<h2>About</h2>
+
+<div style="float:left;background-color:transparent;">
+	<img src="../images/quill-paper.png" style="width:100px">
+</div>
+
+<p>
+This library is heavily based on the <a href="https://github.com/rtakehara/5e-Framework/tree/master/Resources">Notebook library</a> from Rod Takehara. </p>
+
+<p>
+I have mainly polished the code and updated the use of frames and dialogs to use <code>frame5()</code> and <code>dialog5()</code>.
+</p>
+
+<p>
+<b>Version:</b> <span id="libVersion"></span>
+</p>
+
+<script>
+    (async () => {
+        let data = await fetchLibraryData()
+        document.getElementById("libVersion").innerHTML = data["version"]
+    })();
+</script>
+</body>
+</html>

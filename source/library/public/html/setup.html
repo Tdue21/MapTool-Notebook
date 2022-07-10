@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <link rel="stylesheet" type="text/css" href="../css/Elegant.css?cachelib=false">
+        <script src="../javascript/maptool.js?cachelib=false"></script>
+        <style type="text/css">
+            td:first-child {
+                width:25%;
+            }
+            tr:nth-child(even) {
+                background-color: #efefef;
+            }
+            button {
+                width: 100px;
+            }
+        </style>
+    </head>
+
+    <body>
+        <form id="setup" name="setup" action="" method="post">
+            <table>
+                <tr>
+                    <td><label for="theme">Default Theme</label></td>
+                    <td><select id="theme" name="theme"></select></td>
+                </tr>
+
+                <tr>
+                    <td><label for="pcOut">PC Output</label></td>
+                    <td><select id="pcOut" name="pcOut">
+                        <option selected>all</option>
+                        <option>self</option>
+                        <option>gm</option>
+                        <option>gm-self</option>
+                        <option>none</option>
+                    </select></td>
+                </tr>
+
+                <tr>
+                    <td><label for="gmOut">GM Output</label></td>
+                    <td><select id="gmOut" name="gmOut">
+                        <option>all</option>
+                        <option selected>self</option>
+                        <option>gm</option>
+                        <option>gm-self</option>
+                        <option>none</option>
+                    </select></td>
+                </tr>
+
+                <tr>
+                    <td><label for="diceSize">Dice Size</label></td>
+                    <td><input type="text" id="diceSize" name="diceSize" value="100"></td>
+                </tr>
+
+                <tr>
+                    <td><label for="search">Search Engine</label></td>
+                    <td><input type="text" id="search" name="search" value="https://www.dndbeyond.com/search?q="></td>
+                </tr>
+
+                <tr>
+                    <td><label for="pcAudio">PC Audio Output</label></td>
+                    <td><select id="pcAudio" name="pcAudio">
+                        <option selected>all</option>
+                        <option>self</option>
+                        <option>gm</option>
+                        <option>gm-self</option>
+                        <option>none</option>
+                    </select></td>
+                </tr>
+
+                <tr>
+                    <td><label for="gmAudio">GM Audio Output</label></td>
+                    <td><select id="gmAudio" name="gmAudio">
+                        <option>all</option>
+                        <option selected>self</option>
+                        <option>gm</option>
+                        <option>gm-self</option>
+                        <option>none</option>
+                    </select></td>
+                </tr>
+
+                <tr>
+                    <td><label for="audioClips">Audio Clips URL list</label></td>
+                    <td><textarea id="audioClips" name="audioClips"></textarea></td>
+                </tr>
+
+                <tr>
+                    <td><label for="loadStart">Load on Startup</label></td>
+                    <td><input type="checkbox" id="loadStart" name="loadStart" value="1"></td>
+                </tr>
+
+                <tr>
+                    <td colspan="2" style="text-align: right;">
+                        <button type="submit" id="submit" name="submit">Ok</button>
+                        <button type="reset" id="reset" name="reset">Cancel</button>
+                    </td>
+                </tr>
+            </table>
+        </form>
+
+        <script>
+
+        </script>
+    </body>
+</html>
