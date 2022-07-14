@@ -1,0 +1,11 @@
+{
+	"version": "2.0.0",
+	"tasks": [
+		{
+			"label": "Build library",
+			"type": "process",
+			"command": "${workspaceFolder}\\build\\build.bat",
+			"echoCommand": true
+		}
+	]
+}

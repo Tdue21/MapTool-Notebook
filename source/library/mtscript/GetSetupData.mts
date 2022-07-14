@@ -1,16 +1,13 @@
 [h:broadcast("GetSetupData starting")]
+[h:fields=getLibPropertyNames()]
+[h:broadcast(fields)]
+[h:setupData="{}"]
+[h,foreach(field, fields,""), code:{
+    [h:value=getLibProperty(field)]
+    [h:broadcast("Reading '" + field + "' - '" + value + "'")]
+    [h:setupData=json.set(setupData, field, value)]
+}]
 
-[h:setupData = json.set("{}",
-                    "defaultTheme", getLibProperty("defaultTheme"),
-                    "search",       getLibProperty("search"),
-                    "diceSize",     getLibProperty("diceSize"),
-                    "pcOutput",     getLibProperty("pcOutput"),
-                    "gmOutput",     getLibProperty("gmOutput"),
-                    "gmAudio",      getLibProperty("gmAudio"),
-                    "pcAudio",      getLibProperty("pcAudio"),
-                    "audioClips",   json.toList(getLibProperty("audioClips")),
-                    "loadOnStart",  getLibProperty("loadOnStart")
-                )]
 [h:broadcast("<pre>" + json.indent(setupData) + "</pre>")]                
 [r:setupData]
 

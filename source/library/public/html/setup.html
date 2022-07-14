@@ -10,12 +10,29 @@
             tr, td {
                 margin:0px;
                 padding:0px;
+                text-align: left;
+                vertical-align: top;
             }
             tr:nth-child(even) {
                 background-color: #efefef;
             }
             button {
                 width: 100px;
+            }
+            select,input[type=text] {
+                margin:0px;
+                margin-top:2px;
+                margin-bottom:2px;
+                padding:0px;
+                height:25px;
+                width: 95%;
+            }
+            textarea {
+                margin-top:2px;
+                margin-bottom:2px;
+                min-height:100px;
+                width: 95%;
+
             }
         </style>
     </head>
@@ -24,12 +41,12 @@
         <form id="setup" name="setup" action="macro://ProcessSetup@lib:net.dovesoft.notebook/none/impersonated?" method="post">
             <table style="border-collapse: collapse;">
                 <tr>
-                    <td><label for="defaultTheme">Default Theme</label></td>
+                    <td><label accesskey="T" for="defaultTheme">Default Theme</label></td>
                     <td><select id="defaultTheme" name="defaultTheme"></select></td>
                 </tr>
 
                 <tr>
-                    <td><label for="pcOutput">PC Output</label></td>
+                    <td><label accesskey="P" for="pcOutput">PC Output</label></td>
                     <td><select id="pcOutput" name="pcOutput">
                         <option selected>all</option>
                         <option>self</option>
@@ -40,7 +57,7 @@
                 </tr>
 
                 <tr>
-                    <td><label for="gmOutput">GM Output</label></td>
+                    <td><label accesskey="G" for="gmOutput">GM Output</label></td>
                     <td><select id="gmOutput" name="gmOutput">
                         <option>all</option>
                         <option selected>self</option>
@@ -51,17 +68,17 @@
                 </tr>
 
                 <tr>
-                    <td><label for="diceSize">Dice Size</label></td>
+                    <td><label accesskey="D" for="diceSize">Dice Size</label></td>
                     <td><input type="text" id="diceSize" name="diceSize" value="100"></td>
                 </tr>
 
                 <tr>
-                    <td><label for="search">Search Engine</label></td>
+                    <td><label accesskey="E" for="search">Search Engine</label></td>
                     <td><input type="text" id="search" name="search" value="https://www.dndbeyond.com/search?q="></td>
                 </tr>
 
                 <tr>
-                    <td><label for="pcAudio">PC Audio Output</label></td>
+                    <td><label accesskey="A" for="pcAudio">PC Audio Output</label></td>
                     <td><select id="pcAudio" name="pcAudio">
                         <option selected>all</option>
                         <option>self</option>
@@ -72,7 +89,7 @@
                 </tr>
 
                 <tr>
-                    <td><label for="gmAudio">GM Audio Output</label></td>
+                    <td><label accesskey="O" for="gmAudio">GM Audio Output</label></td>
                     <td><select id="gmAudio" name="gmAudio">
                         <option>all</option>
                         <option selected>self</option>
@@ -83,12 +100,12 @@
                 </tr>
 
                 <tr>
-                    <td><label for="audioClips">Audio Clips URL list</label></td>
+                    <td><label accesskey="C" for="audioClips">Audio Clips URL list</label></td>
                     <td><textarea id="audioClips" name="audioClips"></textarea></td>
                 </tr>
 
                 <tr>
-                    <td><label for="loadOnStart">Load on Startup</label></td>
+                    <td><label accesskey="L" for="loadOnStart">Load on Startup</label></td>
                     <td><input type="checkbox" id="loadOnStart" name="loadOnStart" value="1"></td>
                 </tr>
 
@@ -107,8 +124,8 @@
                 for(let key in data) {
                     if(data.hasOwnProperty(key)) {
                         let element = document.getElementById(key)
-                        if(element.getAttribute("type") === "checkbox") {
-                            element.checked = data[key] === "1"
+                        if(element.getAttribute("type").toLowerCase() === "checkbox") {
+                            element.checked = data[key] == 1 ? true : false
                         } else {
                             element.value = data[key]
                         }

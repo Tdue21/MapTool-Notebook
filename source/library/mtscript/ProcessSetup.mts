@@ -11,7 +11,7 @@
     [h:setLibProperty("gmOutput",     json.get(macro.args, "gmOutput"))]
     [h:setLibProperty("gmAudio",      json.get(macro.args, "gmAudio"))]
     [h:setLibProperty("pcAudio",      json.get(macro.args, "pcAudio"))]
-    [h:setLibProperty("audioClips",   json.fromList(json.get(macro.args, "audioClips")))]
+    [h:setLibProperty("audioClips",   json.get(macro.args, "audioClips"))]
     [h:setLibProperty("loadOnStart",  json.get(macro.args, "loadOnStart"))]
 };{}]
 
