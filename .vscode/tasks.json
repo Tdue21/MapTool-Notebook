@@ -5,7 +5,12 @@
 			"label": "Build library",
 			"type": "process",
 			"command": "${workspaceFolder}\\build\\build.bat",
-			"echoCommand": true
+			"echoCommand": true,
+			"problemMatcher": [],
+			"group": {
+				"kind": "build",
+				"isDefault": true
+			}
 		}
 	]
 }
