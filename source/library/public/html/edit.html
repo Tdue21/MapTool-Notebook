@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <link rel="stylesheet" type="text/css" href="../css/common.css?cachelib=false">
+        <script src="../javascript/maptool.js?cachelib=false"></script>
+        <script src="../javascript/binding.js?cachelib=false"></script>
+        <style type="text/css">
+            table {
+                width: 100%;
+                margin: 0px;
+                padding: 5px;
+                border-collapse: collapse;
+            }
+
+            td:first-child {
+                width:200px;
+            }
+            tr, td {
+                margin:0px;
+                padding:0px;
+                text-align: left;
+                vertical-align: top;
+            }
+            tr:nth-child(even) {
+                background-color: #efefef;
+            }
+            button {
+                width: 100px;
+            }
+            select,input[type=text] {
+                margin:0px;
+                margin-top:2px;
+                margin-bottom:2px;
+                padding:0px;
+                height:25px;
+                width: 95%;
+            }
+            textarea {
+                margin-top:2px;
+                margin-bottom:2px;
+                min-height:100px;
+                width: 95%;
+
+            }
+        </style>
+    </head>
+    <body>
+        <table>
+            <caption>Create notebook</caption>
+            <tr>
+                <td><label for="name">Name</label></td>
+                <td><input type="text" id="name" name="name" placeholder="Name of notebook"></td>
+            </tr>
+            <tr>
+                <td><label for="summary">Summary</label></td>
+                <td><input type="text" id="summary" name="summary" placeholder="Short summary of notebook"></td>
+            </tr>
+            <tr>
+                <td><label for="summary">Private</label></td>
+                <td><input type="checkbox" id="isPrivate" name="isPrivate"></td>
+            </tr>
+        </table>
+        <table>
+            <caption>Pages</caption>
+            <tr>
+                <td></td>
+            </tr>
+        </table>
+    </body>
+</html>

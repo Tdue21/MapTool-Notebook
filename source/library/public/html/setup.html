@@ -3,7 +3,15 @@
     <head>
         <link rel="stylesheet" type="text/css" href="../css/Elegant.css?cachelib=false">
         <script src="../javascript/maptool.js?cachelib=false"></script>
+        <script src="../javascript/binding.js?cachelib=false"></script>
         <style type="text/css">
+            table {
+                width: 100%;
+                margin: 0px;
+                padding: 5px;
+                border-collapse: collapse;
+            }
+
             td:first-child {
                 width:35%;
             }
@@ -39,7 +47,7 @@
 
     <body>
         <form id="setup" name="setup" action="macro://ProcessSetup@lib:net.dovesoft.notebook/none/impersonated?" method="post">
-            <table style="border-collapse: collapse;">
+            <table>
                 <tr>
                     <td><label accesskey="T" for="defaultTheme">Default Theme</label></td>
                     <td><select id="defaultTheme" name="defaultTheme"></select></td>
@@ -121,16 +129,16 @@
         <script>
             (async () => {
                 let data = await fetchSetupData()
-                for(let key in data) {
-                    if(data.hasOwnProperty(key)) {
-                        let element = document.getElementById(key)
-                        if(element.getAttribute("type").toLowerCase() === "checkbox") {
-                            element.checked = data[key] == 1 ? true : false
-                        } else {
-                            element.value = data[key]
-                        }
-                    }
-                }
+                
+                dataBind("defaultTheme", "value", data);
+                dataBind("pcOutput", "value", data);
+                dataBind("gmOutput", "value", data);
+                dataBind("pcAudio", "value", data);
+                dataBind("gmAudio", "value", data);
+                dataBind("diceSize", "value", data);
+                dataBind("search", "value", data);
+                dataBind("audioClips", "value", data);
+                dataBind("loadOnStart", "checked", data);
         })();
         </script>
     </body>

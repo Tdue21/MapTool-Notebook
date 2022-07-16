@@ -2,14 +2,10 @@
 <html lang="en">
 
 <head>
-    <link rel="stylesheet" type="text/css" href="../css/Elegant.css?cachelib=false">
+    <link rel="stylesheet" type="text/css" href="../css/common.css?cachelib=false">
     <script src="../javascript/maptool.js?cachelib=false"></script>
     <style type="text/css">
-        h1 {
-            font-size: 12pt;
-        }
-
-        input[type=submit] {
+        .button {
             width: 95%;
             border: 1px solid black;
             background-color: #dedede;
@@ -19,23 +15,55 @@
             margin-left: 5px;
             margin-bottom: 5px;
             height: 25px;
+            text-align: center;
+        }
+
+        ul {
+            list-style-type: none;
+            padding:0px;
+        }
+        li {
+            padding:0px;
+        }
+
+        .button a {
+            text-decoration: none;
+            color: black;
+        }
+
+        .button:hover {
+            background-color: #adadad;
         }
     </style>
 </head>
 
 <body>
-    
+    <h1>Create</h1>
+    <a href="macro://net.dovesoft.notebook/CreateNotebook"><div class="button">New notebook</div></a>
 
-    <form action="[r:processorLink]" method="json">
-        <h1>Create</h1>
-        <input type="submit" name="NewNotebook" value="New Notebook">
-        <h1>Read</h1>
+    <h1>Read</h1>
+    <ul id="list"></ul>
+    <script>
+        (async () => {
+            try {
+                let data = await fetchNotebookList();
+                let list = document.getElementById("list");
 
-        <input type="submit" name="[r:currentNote]" value="[r:CurrentName]">
-        <br>
+                for (let notebook in data) {
+                    let item = `<li>
+                        <a href="macro://net.dovesoft.notebook/openNotebook?name=${encodeURI(notebook)}">
+                        <div class="button">${notebook}</div>
+                        </a>
+                    </li>`;
 
-        <input type="hidden" name="NoteList" value="[r:encode(ListNotes)]">
-    </form>
+                    list.innerHTML += item;
+                }
+
+            } catch (error) {
+                console.log("Error: " + error + "\r\n" + error.stack)
+            }
+        })();
+    </script>
 </body>
 
 </html>
