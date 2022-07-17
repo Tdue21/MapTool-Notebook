@@ -1,24 +1,31 @@
 "use strict";
 
-function setLibProperty(name, value) { 
-    MTScript.execMacro(`[h:setLibProperty("${name}", "${value}", "${UDFNameSpace}")]`); 
+MapTool.chat.broadcast("UDF Prefix:" + UDFPrefix);
+MapTool.chat.broadcast("UDF Namespace:" + UDFNameSpace);
+
+function setLibProperty(name, value) {
+    MTScript.execMacro(`[h:setLibProperty("${name}", "${value}", "${UDFNameSpace}")]`);
 }
 
-function getLibProperty(name) { 
-    return MTScript.execMacro(`[r:getLibProperty("${name}", "${UDFNameSpace}")]`); 
+function getLibProperty(name) {
+    return MTScript.execMacro(`[r:getLibProperty("${name}", "${UDFNameSpace}")]`);
 }
 
-function getLibraryInfo(ns) { 
-    return MTScript.execMacro(`[r:library.getInfo("${ns}")]`); 
+function getLibraryInfo(ns) {
+    return MTScript.execMacro(`[r:library.getInfo("${ns}")]`);
 }
 
-function getDefinedFunctions(delim) { 
-    return MTScript.execMacro(`[r:getDefinedFunctions("${delim}")]`); 
+function getDefinedFunctions(delim) {
+    return MTScript.execMacro(`[r:getDefinedFunctions("${delim}")]`);
+}
+
+function getStaticData(namespace, path) {
+    return MTScript.execMacro(`[r:data.getStaticData("${namespace}", "${path}")]`)
 }
 
 function fetchNotebooks() {
     try {
-        let rawData =getLibProperty("Notebooks");
+        let rawData = getLibProperty("Notebooks");
         MapTool.chat.broadcast("Raw Data: " + rawData);
         let decodedData = decodeURI(rawData);
         MapTool.chat.broadcast("Decoded Data: " + decodedData);
@@ -33,15 +40,15 @@ function fetchNotebooks() {
 function printWelcome() {
     try {
         const rawData = getLibraryInfo(UDFNameSpace);
-        const libData = (rawData != "") ? JSON.parse(rawData) : { name: "", libVersion: ""};
+        const libData = (rawData != "") ? JSON.parse(rawData) : { name: "", libVersion: "" };
         const libName = libData.name;
         const libVersion = libData.version;
         const rawUdfs = getDefinedFunctions("json");
 
         let udfs = rawUdfs != "" ? JSON.parse(rawUdfs) : [];
         let functions = [];
-        for(let udf of udfs) {
-            if(udf.name.startsWith(UDFPrefix)) {
+        for (let udf of udfs) {
+            if (udf.name.startsWith(UDFPrefix)) {
                 functions.push(udf.name)
             }
         }
@@ -61,5 +68,5 @@ function printWelcome() {
     }
 }
 
-MTScript.registerMacro("fetchNotebooks", fetchNotebooks);
 MTScript.registerMacro("printWelcome", printWelcome);
+MTScript.registerMacro("fetchNotebooks", fetchNotebooks);
