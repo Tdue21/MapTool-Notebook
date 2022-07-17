@@ -12,12 +12,6 @@ async function executeMacro(macro, args) {
     return data;
 }
 
-async function openView(macro, args) {
-    console.log(`openView called for view '${macro} with args: ${args}`)
-    let uri = "macro:" + macro + "@lib:net.dovesoft.notebook"
-    await fetch(uri, { method: "POST", body: args != null ? args : null })
-}
-
 /**
  * Fetches MapTool data to use on the help page.
  */
@@ -37,3 +31,10 @@ async function fetchNotebookList() { return executeMacro("ListNotebooks") }
  * Fetch setup data.
  */
 async function fetchSetupData() { return executeMacro("GetSetupData") }
+
+/**
+ * Fetch data for edit notebook - workaround for not being able to use query parameters. 
+*/
+async function getEditNotebookArgs() { return executeMacro("getEditNotebookArgs") }
+
+async function getNotebookData(name) { return executeMacro("getNotebookData", name) }

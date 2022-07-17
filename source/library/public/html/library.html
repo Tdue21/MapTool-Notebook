@@ -39,7 +39,7 @@
 
 <body>
     <h1>Create</h1>
-    <button class="button" onclick="openView('createNotebook');">New notebook</button>
+    <button class="button" onclick="executeMacro('editNotebook', 'new');">New notebook</button>
 
     <h1>Read</h1>
     <ul id="list"></ul>
@@ -50,7 +50,7 @@
                 let list = document.getElementById("list");
 
                 for (let notebook in data) {
-                    let item = `<li><button class="button" onclick="openView('openNotebook', '${encodeURI(notebook)}');">${notebook}</button></li>`;
+                    let item = `<li><button class="button" onclick="executeMacro('editNotebook', '${encodeURI(notebook)}');">${notebook}</button></li>`;
                     list.innerHTML += item;
                 }
 

@@ -1,1 +1,1 @@
-[h:html.dialog5("About", "lib://net.dovesoft.notebook/html/about.html", "width=400; height=350; temporary=1; noframe=0; input=1")]
+[h:html.dialog5("About", "lib://net.dovesoft.notebook/html/about.html", "width=400; height=380; temporary=1; noframe=0; input=1")]
