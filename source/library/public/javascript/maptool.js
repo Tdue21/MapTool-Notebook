@@ -37,4 +37,13 @@ async function fetchSetupData() { return executeMacro("GetSetupData") }
 */
 async function getEditNotebookArgs() { return executeMacro("getEditNotebookArgs") }
 
-async function getNotebookData(name) { return executeMacro("getNotebookData", name) }
+/** */
+async function getNotebookData(name) { return executeMacro("getNotebookData", name); }
+
+/** Determine is current player is GM */
+async function isGM() { return "0"; }
+//async function isGM() { return executeMacro("getIsGm"); }
+
+/** Retrieve name of current player */
+async function getPlayerName() { return "Gert"; }
+//async function getPlayerName() { return executeMacro("getPlayerName"); }

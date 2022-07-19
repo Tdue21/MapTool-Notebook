@@ -1,35 +1,29 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <link rel="stylesheet" type="text/css" href="../css/Elegant.css?cachelib=false">
-    <script src="../javascript/maptool.js?cachelib=false"></script>
+    <link rel="stylesheet" type="text/css" href="../css/common.css?cachelib=false">
 </head>
-
 <body>
-<h2>About</h2>
+    <h2>About</h2>
 
-<div style="float:left;background-color:transparent;">
-	<img src="../images/quill-paper.png" style="width:100px">
-</div>
+    <div style="float:left;background-color:transparent;">
+        <img src="../images/quill-paper.png" style="width:100px">
+    </div>
 
-<p>
-The concept of this library is based on the 
-<a href="https://github.com/rtakehara/5e-Framework/tree/master/Resources">Notebook library</a> 
-from Rod Takehara. </p>
+    <p>
+        The concept of this library is based on the
+        <a href="https://github.com/rtakehara/5e-Framework/tree/master/Resources">Notebook library</a>
+        from Rod Takehara.
+    </p>
 
-<p>
-It is an almost complete rewrite though, utilitizing functionality from the latest version of MapTool, as of this writing 1.12.
-</p>
+    <p>
+        It is an almost complete rewrite though, utilitizing functionality from the latest version of MapTool, as of
+        this writing 1.12.
+    </p>
 
-<p>
-<b>Version:</b> <span id="libVersion"></span>
-</p>
-
-<script>
-    (async () => {
-        let data = await fetchLibraryData()
-        document.getElementById("libVersion").innerHTML = data["version"]
-    })();
-</script>
+    <p>
+        <b>Version:</b> <span id="libVersion"></span>
+    </p>
+    <script src="../javascript/controllers/about.js?cachelib=false"></script>
 </body>
 </html>

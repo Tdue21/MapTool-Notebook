@@ -3,7 +3,7 @@
     <head>
         <link rel="stylesheet" type="text/css" href="../css/Elegant.css?cachelib=false">
         <script src="../javascript/maptool.js?cachelib=false"></script>
-        <script src="../javascript/binding.js?cachelib=false"></script>
+        <script src="../javascript/setup.js?cachelib=false"></script>
         <style type="text/css">
             table {
                 width: 100%;
@@ -128,18 +128,9 @@
 
         <script>
             (async () => {
-                let data = await fetchSetupData()
-                
-                dataBind("defaultTheme", "value", data);
-                dataBind("pcOutput", "value", data);
-                dataBind("gmOutput", "value", data);
-                dataBind("pcAudio", "value", data);
-                dataBind("gmAudio", "value", data);
-                dataBind("diceSize", "value", data);
-                dataBind("search", "value", data);
-                dataBind("audioClips", "value", data);
-                dataBind("loadOnStart", "checked", data);
-        })();
+                let data = await fetchSetupData();
+                const app = new Controller(new Model(data), new View());                
+            })();
         </script>
     </body>
 </html>

@@ -1,0 +1,35 @@
+{
+    "version": 1,
+    "User Guide": {
+        "title": "User Guide",
+        "summary": "User guide for MapTool notebook add-on.",
+        "owner": "net.dovesoft.notebook",
+        "private": false,
+        "pages": {
+            "0. Introduction": "content of page 0",
+            "1. First section": "content of page 1",
+            "2. Second section": "content of page 2",
+            "3. Third section": "content of page 3"
+        }
+    },
+    "notebook 1": {
+        "title": "Gertrud's notebook",
+        "summary": "This is a private notebook, owned by Gertrud.",
+        "owner": "Gertrud",
+        "private": true,
+        "pages": {
+            "page 1": "content of page 1",
+            "page 2": "content of page 2"
+        }
+    },
+    "notebook 2": {
+        "title": "notebook 2",
+        "summary": "This is the second notebook.",
+        "owner": "",
+        "private": false,
+        "pages": {
+            "page 1": "content of page 1",
+            "page 2": "content of page 2"
+        }
+    }
+}

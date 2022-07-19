@@ -9,39 +9,5 @@
         "pcAudio": "all",
         "loadOnStart": 0,
         "audioClips": "https://github.com/rtakehara/5e-Framework/blob/master/Resources/Audio%20Clips/Dice%201.wav,https://github.com/rtakehara/5e-Framework/blob/master/Resources/Audio%20Clips/Dice%202.wav,https://github.com/rtakehara/5e-Framework/blob/master/Resources/Audio%20Clips/Dice%203.wav,https://github.com/rtakehara/5e-Framework/blob/master/Resources/Audio%20Clips/Dice%204.wav,https://github.com/rtakehara/5e-Framework/blob/master/Resources/Audio%20Clips/Dice%205.wav,https://github.com/rtakehara/5e-Framework/blob/master/Resources/Audio%20Clips/Dice%206.wav,https://github.com/rtakehara/5e-Framework/blob/master/Resources/Audio%20Clips/Dice%207.wav,https://github.com/rtakehara/5e-Framework/blob/master/Resources/Audio%20Clips/Dice%208.wav,https://github.com/rtakehara/5e-Framework/blob/master/Resources/Audio%20Clips/Dice%209.wav,https://github.com/rtakehara/5e-Framework/blob/master/Resources/Audio%20Clips/Dice%210.wav,https://github.com/rtakehara/5e-Framework/blob/master/Resources/Audio%20Clips/Dice%211.wav"
-    },
-    "notebooks": {
-        "version": 5,
-        "builtin": {
-            "notebook Manual": {
-                "summary": "User guide for MapTool notebook add-on.",
-                "owner": "gm",
-                "private": false,
-                "pages": {
-                    "0. Introduction": "content of page 1",
-                    "1. First section": "content of page 2",
-                    "2. second section": "content of page 2",
-                    "3. third section": "content of page 2"
-                }
-            },
-            "notebook 1": {
-                "summary": "This is the first notebook.",
-                "owner": "",
-                "private": true,
-                "pages": {
-                    "page 1": "content of page 1",
-                    "page 2": "content of page 2"
-                }
-            },
-            "notebook 2": {
-                "summary": "This is the second notebook.",
-                "owner": "",
-                "private": true,
-                "pages": {
-                    "page 1": "content of page 1",
-                    "page 2": "content of page 2"
-                }
-            }
-        }
     }
 }

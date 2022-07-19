@@ -86,7 +86,15 @@ blockquote blockquote {
     padding-right: 0;
 }
 
-
+hr .softline {
+    height: 1px;
+    padding: 0;
+    margin: 16px 0;
+    background-color: rgb(200, 200, 200);
+    border: 0 none;
+    overflow: hidden;
+    box-sizing: content-box;
+}
 /*
 h1:hover a.anchor,
 h2:hover a.anchor,

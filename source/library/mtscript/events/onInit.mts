@@ -3,20 +3,6 @@
 [h:functionPrefix = "notebook"]
 
 [h:'<!-- -------------------------------------------------------- -->']
-[h:'<!-- Check builtin notebooks for updates.                     -->']
-[h:'<!-- -------------------------------------------------------- -->']
-[h:staticData=data.getStaticData(nameSpace, "data/settings.json")]
-[h:initialData=json.get(staticData, "notebooks")]
-[h:oldversion=number(getLibProperty("notebookversion"))]
-[h:newversion=number(json.get(initialData, "version"))]
-[h,if(newversion > oldversion),code: {
-    [h:broadcast("Updating builtin notebooks")]
-    [h:setLibProperty("notebookversion", newversion)]
-    [h:builtin=json.get(initialData, "builtin")]
-    [h:setLibProperty("Notebooks", encode(builtin))]
-};{}]
-
-[h:'<!-- -------------------------------------------------------- -->']
 [h:'<!-- Define user functions for easier access.                 -->']
 [h:'<!-- -------------------------------------------------------- -->']
 [h:defineFunction(functionPrefix + ".library", strformat("Notebooks@lib:%{nameSpace}"))]
@@ -30,9 +16,11 @@
 [h:js.createNS(nameSpace)]
 [h:js.evalNS(nameSpace, "var UDFPrefix='" + functionPrefix + "';")]
 [h:js.evalNS(nameSpace, "var UDFNameSpace='" + nameSpace + "';")]
-[h:js.evalURI(nameSpace, uriPrefix + "/NotebookFunctions.js?cachelib=false")]
+[h:js.evalURI(nameSpace, uriPrefix + "/functions/MTShims.js?cachelib=false")]
+[h:js.evalURI(nameSpace, uriPrefix + "/functions/NotebookFunctions.js?cachelib=false")]
 
 [h:'<!-- -------------------------------------------------------- -->']
 [h:'<!-- Print welcome message.                                   -->']
 [h:'<!-- -------------------------------------------------------- -->']
 [h:js.printWelcome()]
+[h:"js.checkBuiltinNotebooks()"]

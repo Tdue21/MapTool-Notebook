@@ -2,7 +2,6 @@
 <html lang="en">
 <head>
     <link rel="stylesheet" type="text/css" href="../css/common.css?cachelib=false">
-    <script src="../javascript/maptool.js?cachelib=false"></script>
     <style type="text/css">
         table {
             margin: 0px;
@@ -105,14 +104,6 @@
             </td>
         </tr>
     </table>
-    <script>
-        (async () => {
-            let data = await fetchHelpData()
-            console.log(data)
-            document.getElementById("getPlayerName").innerHTML = data["playerName"]
-            document.getElementById("rollD6").innerHTML = data["rollD6"]
-            document.getElementById("toHit").innerHTML = data["toHit"]
-        })();
-    </script>
+    <script src="../javascript/controllers/help.js?cachelib=false"></script>
 </body>
 </html>
