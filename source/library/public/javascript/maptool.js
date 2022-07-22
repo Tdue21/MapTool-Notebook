@@ -13,16 +13,6 @@ async function executeMacro(macro, args) {
 }
 
 /**
- * Fetches MapTool data to use on the help page.
- */
-async function fetchHelpData() { return executeMacro("GetHelpData") }
-
-/**
- * Fetches library info from MapTool
- */
-async function fetchLibraryData() { return executeMacro("GetLibraryData") }
-
-/**
  * List of all notebooks
  */
 async function fetchNotebookList() { return executeMacro("ListNotebooks") }

@@ -1,17 +1,10 @@
 class Model {
     constructor() {
-        let uri = "macro:helpers/GetLibraryData@lib:net.dovesoft.notebook"
-        let p = fetch(uri, { method: "POST" });
-        //let p = fetch("../../../library.json");
+        let p = MapTool.getUserData();
 
         p.then((r) => {
-            r.json().then((data) => {
-                this.version = data.version;
-                this._connected(this);
-            }, (e2) => {
-                console.log("Error getting version: " + e2);
-                this._connectFailed(e2);
-            });
+            this.version = atob(r);
+            this._connected(this);
         }, (e1) => {
             console.log("Error getting library data: " + e1);
             this._connectFailed(e1);

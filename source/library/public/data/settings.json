@@ -1,13 +1,11 @@
 {
-    "settings": {
-        "defaultTheme": "Elegant",
-        "search": "https://www.dndbeyond.com/search?q=",
-        "diceSize": 100,
-        "pcOutput": "all",
-        "gmOutput": "self",
-        "gmAudio": "self",
-        "pcAudio": "all",
-        "loadOnStart": 0,
-        "audioClips": "https://github.com/rtakehara/5e-Framework/blob/master/Resources/Audio%20Clips/Dice%201.wav,https://github.com/rtakehara/5e-Framework/blob/master/Resources/Audio%20Clips/Dice%202.wav,https://github.com/rtakehara/5e-Framework/blob/master/Resources/Audio%20Clips/Dice%203.wav,https://github.com/rtakehara/5e-Framework/blob/master/Resources/Audio%20Clips/Dice%204.wav,https://github.com/rtakehara/5e-Framework/blob/master/Resources/Audio%20Clips/Dice%205.wav,https://github.com/rtakehara/5e-Framework/blob/master/Resources/Audio%20Clips/Dice%206.wav,https://github.com/rtakehara/5e-Framework/blob/master/Resources/Audio%20Clips/Dice%207.wav,https://github.com/rtakehara/5e-Framework/blob/master/Resources/Audio%20Clips/Dice%208.wav,https://github.com/rtakehara/5e-Framework/blob/master/Resources/Audio%20Clips/Dice%209.wav,https://github.com/rtakehara/5e-Framework/blob/master/Resources/Audio%20Clips/Dice%210.wav,https://github.com/rtakehara/5e-Framework/blob/master/Resources/Audio%20Clips/Dice%211.wav"
-    }
+    "defaultTheme": "Elegant",
+    "search": "https://www.dndbeyond.com/search?q=",
+    "diceSize": 100,
+    "pcOutput": "all",
+    "gmOutput": "self",
+    "gmAudio": "self",
+    "pcAudio": "all",
+    "loadOnStart": false,
+    "audioClips": "https://github.com/rtakehara/5e-Framework/blob/master/Resources/Audio%20Clips/Dice%201.wav,https://github.com/rtakehara/5e-Framework/blob/master/Resources/Audio%20Clips/Dice%202.wav,https://github.com/rtakehara/5e-Framework/blob/master/Resources/Audio%20Clips/Dice%203.wav,https://github.com/rtakehara/5e-Framework/blob/master/Resources/Audio%20Clips/Dice%204.wav,https://github.com/rtakehara/5e-Framework/blob/master/Resources/Audio%20Clips/Dice%205.wav,https://github.com/rtakehara/5e-Framework/blob/master/Resources/Audio%20Clips/Dice%206.wav,https://github.com/rtakehara/5e-Framework/blob/master/Resources/Audio%20Clips/Dice%207.wav,https://github.com/rtakehara/5e-Framework/blob/master/Resources/Audio%20Clips/Dice%208.wav,https://github.com/rtakehara/5e-Framework/blob/master/Resources/Audio%20Clips/Dice%209.wav,https://github.com/rtakehara/5e-Framework/blob/master/Resources/Audio%20Clips/Dice%210.wav,https://github.com/rtakehara/5e-Framework/blob/master/Resources/Audio%20Clips/Dice%211.wav"
 }

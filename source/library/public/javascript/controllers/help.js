@@ -1,21 +1,16 @@
 class Model {
     constructor() {
-        let uri = "macro:helpers/GetHelpData@lib:net.dovesoft.notebook"
-        let p = fetch(uri, { method: "POST" });
-        //let p = fetch("../../public/data/helpTestData.json");
+        let p = MapTool.getUserData();
 
         p.then((r) => {
-            r.json().then((data) => {
-                console.log(JSON.stringify(data));
-                this.playerName = data.playerName;
-                this.toHitRoll = data.toHit;
-                this.d6Roll = data.rollD6;
+            let decoded = atob(r);
+            let data = JSON.parse(decoded);
 
-                this._connected(this);
-            }, (e2) => {
-                console.log("Error getting version: " + e2);
-                this._connectFailed(e2);
-            });
+            this.playerName = data.playerName;
+            this.toHitRoll = data.toHit;
+            this.d6Roll = data.rollD6;
+
+            this._connected(this);
         }, (e1) => {
             console.log("Error getting library data: " + e1);
             this._connectFailed(e1);
