@@ -3,9 +3,7 @@
     "definedFunctions": [
         {
             "name":"notebook.help",
-            "path":"mtscript/public/ShowHelp.mts",
-            "description":"Help description",
-            "summary":"Help summary"
+            "path":"mtscript/public/Help.mts"
         },
         {
             "name":"notebook.about",
@@ -17,7 +15,7 @@
         },
         {
             "name":"notebook.library",
-            "path":"mtscript/public/Notebooks.mts"
+            "path":"mtscript/public/Library.mts"
         }
     ]
 }

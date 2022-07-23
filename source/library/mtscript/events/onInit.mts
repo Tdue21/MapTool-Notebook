@@ -5,10 +5,10 @@
 [h:'<!-- -------------------------------------------------------- -->']
 [h:'<!-- Define user functions for easier access.                 -->']
 [h:'<!-- -------------------------------------------------------- -->']
-[h:defineFunction(functionPrefix + ".library", strformat("Notebooks@lib:%{nameSpace}"))]
-[h:defineFunction(functionPrefix + ".help",    strformat("ShowHelp@lib:%{nameSpace}")) ]
+[h:defineFunction(functionPrefix + ".help",    strformat("Help@lib:%{nameSpace}"))     ]
 [h:defineFunction(functionPrefix + ".setup",   strformat("Setup@lib:%{nameSpace}"))    ]
 [h:defineFunction(functionPrefix + ".about",   strformat("About@lib:%{nameSpace}"))    ]
+[h:defineFunction(functionPrefix + ".library", strformat("Library@lib:%{nameSpace}"))]
 
 [h:'<!-- -------------------------------------------------------- -->']
 [h:'<!-- Register javascript functions.                           -->']
