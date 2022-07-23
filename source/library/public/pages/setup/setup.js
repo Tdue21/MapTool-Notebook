@@ -1,6 +1,28 @@
 "use strict";
 console.log("pre class");
 
+/*
+let testData = "eyJkZWZhdWx0VGhlbWUiOiJFbGVnYW50Iiwic2VhcmNoIjoiaHR0cHM6Ly93d3cuZG5kYmV5b25kLmNvbS9zZWFyY2g/cT0iLCJkaWNlU2l6ZSI6MTAwLCJwY09" +
+               "1dHB1dCI6ImFsbCIsImdtT3V0cHV0Ijoic2VsZiIsImdtQXVkaW8iOiJzZWxmIiwicGNBdWRpbyI6ImFsbCIsImxvYWRPblN0YXJ0IjpmYWxzZSwiYXVkaW9DbG" +
+               "lwcyI6Imh0dHBzOi8vZ2l0aHViLmNvbS9ydGFrZWhhcmEvNWUtRnJhbWV3b3JrL2Jsb2IvbWFzdGVyL1Jlc291cmNlcy9BdWRpbyUyMENsaXBzL0RpY2UlMjAxL" +
+               "ndhdixodHRwczovL2dpdGh1Yi5jb20vcnRha2VoYXJhLzVlLUZyYW1ld29yay9ibG9iL21hc3Rlci9SZXNvdXJjZXMvQXVkaW8lMjBDbGlwcy9EaWNlJTIwMi53" +
+               "YXYsaHR0cHM6Ly9naXRodWIuY29tL3J0YWtlaGFyYS81ZS1GcmFtZXdvcmsvYmxvYi9tYXN0ZXIvUmVzb3VyY2VzL0F1ZGlvJTIwQ2xpcHMvRGljZSUyMDMud2F" +
+               "2LGh0dHBzOi8vZ2l0aHViLmNvbS9ydGFrZWhhcmEvNWUtRnJhbWV3b3JrL2Jsb2IvbWFzdGVyL1Jlc291cmNlcy9BdWRpbyUyMENsaXBzL0RpY2UlMjA0Lndhdi" +
+               "xodHRwczovL2dpdGh1Yi5jb20vcnRha2VoYXJhLzVlLUZyYW1ld29yay9ibG9iL21hc3Rlci9SZXNvdXJjZXMvQXVkaW8lMjBDbGlwcy9EaWNlJTIwNS53YXYsa" +
+               "HR0cHM6Ly9naXRodWIuY29tL3J0YWtlaGFyYS81ZS1GcmFtZXdvcmsvYmxvYi9tYXN0ZXIvUmVzb3VyY2VzL0F1ZGlvJTIwQ2xpcHMvRGljZSUyMDYud2F2LGh0" +
+               "dHBzOi8vZ2l0aHViLmNvbS9ydGFrZWhhcmEvNWUtRnJhbWV3b3JrL2Jsb2IvbWFzdGVyL1Jlc291cmNlcy9BdWRpbyUyMENsaXBzL0RpY2UlMjA3LndhdixodHR" +
+               "wczovL2dpdGh1Yi5jb20vcnRha2VoYXJhLzVlLUZyYW1ld29yay9ibG9iL21hc3Rlci9SZXNvdXJjZXMvQXVkaW8lMjBDbGlwcy9EaWNlJTIwOC53YXYsaHR0cH" +
+               "M6Ly9naXRodWIuY29tL3J0YWtlaGFyYS81ZS1GcmFtZXdvcmsvYmxvYi9tYXN0ZXIvUmVzb3VyY2VzL0F1ZGlvJTIwQ2xpcHMvRGljZSUyMDkud2F2LGh0dHBzO" +
+               "i8vZ2l0aHViLmNvbS9ydGFrZWhhcmEvNWUtRnJhbWV3b3JrL2Jsb2IvbWFzdGVyL1Jlc291cmNlcy9BdWRpbyUyMENsaXBzL0RpY2UlMjEwLndhdixodHRwczov" +
+               "L2dpdGh1Yi5jb20vcnRha2VoYXJhLzVlLUZyYW1ld29yay9ibG9iL21hc3Rlci9SZXNvdXJjZXMvQXVkaW8lMjBDbGlwcy9EaWNlJTIxMS53YXYifQ==";
+let fetch = (uri, options) => {
+    if(options.body) { 
+        console.log("Saving: " + options.body); 
+    } else { 
+        return new Promise(r => r(new Response(testData))); 
+    }
+}
+*/
 /***************************************************************************
  * 
  * @class
@@ -291,12 +313,3 @@ class Controller {
  ***************************************************************************/
 console.log("pre app");
 const app = new Controller(new Model(), new View());                
-
-
-
-/*
-let fetch = (uri, options) => {
-    if(options.body) { console.log("Saving: " + options.body); }
-    else { return new Promise(r => r(new Response("eyJkZWZhdWx0VGhlbWUiOiJFbGVnYW50Iiwic2VhcmNoIjoiaHR0cHM6Ly93d3cuZG5kYmV5b25kLmNvbS9zZWFyY2g/cT0iLCJkaWNlU2l6ZSI6MTAwLCJwY091dHB1dCI6ImFsbCIsImdtT3V0cHV0Ijoic2VsZiIsImdtQXVkaW8iOiJzZWxmIiwicGNBdWRpbyI6ImFsbCIsImxvYWRPblN0YXJ0IjpmYWxzZSwiYXVkaW9DbGlwcyI6Imh0dHBzOi8vZ2l0aHViLmNvbS9ydGFrZWhhcmEvNWUtRnJhbWV3b3JrL2Jsb2IvbWFzdGVyL1Jlc291cmNlcy9BdWRpbyUyMENsaXBzL0RpY2UlMjAxLndhdixodHRwczovL2dpdGh1Yi5jb20vcnRha2VoYXJhLzVlLUZyYW1ld29yay9ibG9iL21hc3Rlci9SZXNvdXJjZXMvQXVkaW8lMjBDbGlwcy9EaWNlJTIwMi53YXYsaHR0cHM6Ly9naXRodWIuY29tL3J0YWtlaGFyYS81ZS1GcmFtZXdvcmsvYmxvYi9tYXN0ZXIvUmVzb3VyY2VzL0F1ZGlvJTIwQ2xpcHMvRGljZSUyMDMud2F2LGh0dHBzOi8vZ2l0aHViLmNvbS9ydGFrZWhhcmEvNWUtRnJhbWV3b3JrL2Jsb2IvbWFzdGVyL1Jlc291cmNlcy9BdWRpbyUyMENsaXBzL0RpY2UlMjA0LndhdixodHRwczovL2dpdGh1Yi5jb20vcnRha2VoYXJhLzVlLUZyYW1ld29yay9ibG9iL21hc3Rlci9SZXNvdXJjZXMvQXVkaW8lMjBDbGlwcy9EaWNlJTIwNS53YXYsaHR0cHM6Ly9naXRodWIuY29tL3J0YWtlaGFyYS81ZS1GcmFtZXdvcmsvYmxvYi9tYXN0ZXIvUmVzb3VyY2VzL0F1ZGlvJTIwQ2xpcHMvRGljZSUyMDYud2F2LGh0dHBzOi8vZ2l0aHViLmNvbS9ydGFrZWhhcmEvNWUtRnJhbWV3b3JrL2Jsb2IvbWFzdGVyL1Jlc291cmNlcy9BdWRpbyUyMENsaXBzL0RpY2UlMjA3LndhdixodHRwczovL2dpdGh1Yi5jb20vcnRha2VoYXJhLzVlLUZyYW1ld29yay9ibG9iL21hc3Rlci9SZXNvdXJjZXMvQXVkaW8lMjBDbGlwcy9EaWNlJTIwOC53YXYsaHR0cHM6Ly9naXRodWIuY29tL3J0YWtlaGFyYS81ZS1GcmFtZXdvcmsvYmxvYi9tYXN0ZXIvUmVzb3VyY2VzL0F1ZGlvJTIwQ2xpcHMvRGljZSUyMDkud2F2LGh0dHBzOi8vZ2l0aHViLmNvbS9ydGFrZWhhcmEvNWUtRnJhbWV3b3JrL2Jsb2IvbWFzdGVyL1Jlc291cmNlcy9BdWRpbyUyMENsaXBzL0RpY2UlMjEwLndhdixodHRwczovL2dpdGh1Yi5jb20vcnRha2VoYXJhLzVlLUZyYW1ld29yay9ibG9iL21hc3Rlci9SZXNvdXJjZXMvQXVkaW8lMjBDbGlwcy9EaWNlJTIxMS53YXYifQ=="))); }
-}
-*/
