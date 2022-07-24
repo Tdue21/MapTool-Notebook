@@ -1,3 +1,4 @@
-[h:broadcast(macro.args)]
-[h:broadcast("<pre>" + json.indent(base64.decode(macro.args)) + "</pre>")]
-[h:setLibProperty("Settings", macro.args)]
+[h,if(macro.args != ""),code: {
+    [h:setLibProperty("Settings", macro.args)]
+}]
+[h:closeDialog("Notebook General Setup")]
