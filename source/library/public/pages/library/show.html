@@ -2,90 +2,28 @@
 <html lang="en">
 
 <head>
-    <link rel="stylesheet" type="text/css" href="../css/common.css?cachelib=false">
-    <script src="../javascript/maptool.js?cachelib=false"></script>
-    <script src="../javascript/binding.js?cachelib=false"></script>
-    <style type="text/css">
-    </style>
+    <link rel="stylesheet" type="text/css" href="../../css/common.css?cachelib=false">
+    <link rel="stylesheet" type="text/css" href="./library.css?cachelib=false">
+    <script defer src="../../javascript/jsUtils.js?cachelib=false"></script>
 </head>
 
 <body>
-    <table style="width: 90%;">
-        <tr>
-            <td style="width: 100%;"><h1>
-                <img src="../images/quill-paper.png" width="32px">
-                <span id="title" name="title"></span></h1></td>
-            <td>
-                <div id="lockState" style="border: 1px solid black;width: 24px;height: 24px; padding: 2px">
-                    <img id="lock" src="../images/unlocked.png" width="24px">
-                </div>
-            </td>
-        </tr>
-    </table>
-    <p><span id="summary"></span></p>
-    <hr class="softline">
-    <p>
-        <ul id="pageIndex" style="list-style-type: none">
+    <h1>
+        <img src="../../images/quill-paper.png" width="32px" style="margin: 0px; padding: 0px; vertical-align: bottom;">
+        <span id="title"></span>
+        <div id="lockState" style="border: 1px solid black;width: 16px;height: 16px; padding: 2px;display:inline;float: right;">
+            <img id="lock" src="../../images/unlocked.png" width="16px">
+        </div>
+    </h1>
 
-        </ul>
+    <p><span id="summary"></span></p>
+
+    <h2>Pages</h2>
+    <p>
+    <ul id="pageIndex" style="list-style-type: none"></ul>
     </p>
 
-    <script>
-        (async () => {
-            const isgm = (await isGM()) == 1;
-            const playerName = await getPlayerName();
-            const image = document.getElementById("lock");
-            const pageIndex = document.getElementById("pageIndex");
-
-            let locked = false;
-
-            let data = {
-                "title": "User Guide",
-                "summary": "User guide for MapTool notebook add-on.",
-                "owner": "Gert",
-                "private": false,
-                "pages": {
-                    "0. Introduction": "content of page 1",
-                    "1. First section": "content of page 2",
-                    "2. second section": "content of page 3",
-                    "3. third section": "content of page 4"
-                }
-            };
-
-            function setLocked(isLocked) {
-                image.src = (isLocked)
-                    ? "../images/locked.png"
-                    : "../images/unlocked.png";
-            }
-
-
-            /*          
-            function toggleLocked() {
-                if (isgm || data.owner == playerName) {
-                    setLocked(locked);
-                    locked = !locked;
-                }
-            }
-            image.addEventListener("click", toggleLocked);
-            */
-
-            locked = data.private;
-            setLocked(locked);
-
-            dataBind("title", "innerText", data);
-            dataBind("summary", "innerText", data);
-
-            let indexContent = "";
-            let keys = Object.keys(data.pages);            
-            for(let key of keys) {
-                indexContent += `<li>
-                    <a href="lib://net.dovesoft.notebook/showPage?title=${encodeURI(key)}&content=${encodeURI(data.pages[key])}">${key}</a>
-                </li>`;
-            }
-            pageIndex.innerHTML = indexContent;
-        })();
-    </script>
-
+    <script defer src="./show.js?cachelib=false"></script>
 </body>
 
 </html>

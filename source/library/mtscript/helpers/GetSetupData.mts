@@ -1,2 +1,2 @@
-[h:data = getLibProperty("Settings")]
+[h:data = getLibProperty("Settings", "net.dovesoft.notebook")]
 [r:data]

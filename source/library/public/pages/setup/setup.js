@@ -1,27 +1,5 @@
 "use strict";
 try {
-    /*
-    let testData = "eyJkZWZhdWx0VGhlbWUiOiJFbGVnYW50Iiwic2VhcmNoIjoiaHR0cHM6Ly93d3cuZG5kYmV5b25kLmNvbS9zZWFyY2g/cT0iLCJkaWNlU2l6ZSI6MTAwLCJwY09" +
-                   "1dHB1dCI6ImFsbCIsImdtT3V0cHV0Ijoic2VsZiIsImdtQXVkaW8iOiJzZWxmIiwicGNBdWRpbyI6ImFsbCIsImxvYWRPblN0YXJ0IjpmYWxzZSwiYXVkaW9DbG" +
-                   "lwcyI6Imh0dHBzOi8vZ2l0aHViLmNvbS9ydGFrZWhhcmEvNWUtRnJhbWV3b3JrL2Jsb2IvbWFzdGVyL1Jlc291cmNlcy9BdWRpbyUyMENsaXBzL0RpY2UlMjAxL" +
-                   "ndhdixodHRwczovL2dpdGh1Yi5jb20vcnRha2VoYXJhLzVlLUZyYW1ld29yay9ibG9iL21hc3Rlci9SZXNvdXJjZXMvQXVkaW8lMjBDbGlwcy9EaWNlJTIwMi53" +
-                   "YXYsaHR0cHM6Ly9naXRodWIuY29tL3J0YWtlaGFyYS81ZS1GcmFtZXdvcmsvYmxvYi9tYXN0ZXIvUmVzb3VyY2VzL0F1ZGlvJTIwQ2xpcHMvRGljZSUyMDMud2F" +
-                   "2LGh0dHBzOi8vZ2l0aHViLmNvbS9ydGFrZWhhcmEvNWUtRnJhbWV3b3JrL2Jsb2IvbWFzdGVyL1Jlc291cmNlcy9BdWRpbyUyMENsaXBzL0RpY2UlMjA0Lndhdi" +
-                   "xodHRwczovL2dpdGh1Yi5jb20vcnRha2VoYXJhLzVlLUZyYW1ld29yay9ibG9iL21hc3Rlci9SZXNvdXJjZXMvQXVkaW8lMjBDbGlwcy9EaWNlJTIwNS53YXYsa" +
-                   "HR0cHM6Ly9naXRodWIuY29tL3J0YWtlaGFyYS81ZS1GcmFtZXdvcmsvYmxvYi9tYXN0ZXIvUmVzb3VyY2VzL0F1ZGlvJTIwQ2xpcHMvRGljZSUyMDYud2F2LGh0" +
-                   "dHBzOi8vZ2l0aHViLmNvbS9ydGFrZWhhcmEvNWUtRnJhbWV3b3JrL2Jsb2IvbWFzdGVyL1Jlc291cmNlcy9BdWRpbyUyMENsaXBzL0RpY2UlMjA3LndhdixodHR" +
-                   "wczovL2dpdGh1Yi5jb20vcnRha2VoYXJhLzVlLUZyYW1ld29yay9ibG9iL21hc3Rlci9SZXNvdXJjZXMvQXVkaW8lMjBDbGlwcy9EaWNlJTIwOC53YXYsaHR0cH" +
-                   "M6Ly9naXRodWIuY29tL3J0YWtlaGFyYS81ZS1GcmFtZXdvcmsvYmxvYi9tYXN0ZXIvUmVzb3VyY2VzL0F1ZGlvJTIwQ2xpcHMvRGljZSUyMDkud2F2LGh0dHBzO" +
-                   "i8vZ2l0aHViLmNvbS9ydGFrZWhhcmEvNWUtRnJhbWV3b3JrL2Jsb2IvbWFzdGVyL1Jlc291cmNlcy9BdWRpbyUyMENsaXBzL0RpY2UlMjEwLndhdixodHRwczov" +
-                   "L2dpdGh1Yi5jb20vcnRha2VoYXJhLzVlLUZyYW1ld29yay9ibG9iL21hc3Rlci9SZXNvdXJjZXMvQXVkaW8lMjBDbGlwcy9EaWNlJTIxMS53YXYifQ==";
-    let fetch = (uri, options) => {
-        if(options.body) { 
-            console.log("Saving: " + options.body); 
-        } else { 
-            return new Promise(r => r(new Response(testData))); 
-        }
-    }
-    */
     /***************************************************************************
      * 
      * @class
@@ -29,26 +7,17 @@ try {
     class Model {
         constructor() {
             try {
-                //let p = MapTool.getUserData();
-
-                let uri = "macro:helpers/GetSetupData@lib:net.dovesoft.notebook";
-                let p = fetch(uri, { method: "POST" });
-
-                p.then((r) => {
-                    r.text().then(
-                        (data) => {
-                            this._loadData(data);
-                            this._connected(this);
-                        }, (e2) => {
-                            console.log("Error reading data: " + e2 + "\r\n" + e2.stack);
-                            this._connectFailed(e2);
-                        })
-                }, (e1) => {
-                    console.log("Error getting library data: " + e1 + "\r\n" + e1.stack);
-                    this._connectFailed(e1);
-                });
+                let p = MapTool.getUserData();
+                p.then(
+                    (data) => {
+                        this._loadData(data);
+                        this._connected(this);
+                    }, (e1) => {
+                        logMessage("Error getting library data", e1);
+                        this._connectFailed(e1);
+                    });
             } catch (error) {
-                console.log("Error: " + error + "\r\n" + error.stack);
+                logMessage("Model ctor error", error);
             }
         }
 
@@ -61,15 +30,15 @@ try {
                 return p;
 
             } catch (error) {
-                console.log("onConnect error: " + error + "\r\n" + error.stack);
+                logMessage("onConnect error", error);
             }
         }
 
-        _loadData(r) {
+        _loadData(encoded) {
             try {
-                let decoded = atob(r);
+                let decoded = atob(encoded);
                 let data = JSON.parse(decoded);
-
+                
                 this.defaultTheme = data.defaultTheme;
                 this.pcOutput = data.pcOutput;
                 this.gmOutput = data.gmOutput;
@@ -80,7 +49,7 @@ try {
                 this.audioClips = data.audioClips.replaceAll(",", "\n");
                 this.loadOnStart = data.loadOnStart;
             } catch (error) {
-                console.log("Error: " + error + "\r\n" + error.stack);
+                logMessage("loadData error", error);
             }
         }
 
@@ -107,9 +76,9 @@ try {
                     encoded = btoa(json);
                 }
 
-                fetch("macro:helpers/SaveSetupData@lib:net.dovesoft.notebook", { method: "POST", body: encoded });
+                executeMacro("SaveSetupData", encoded);
             } catch (error) {
-                console.log("Error: " + error + "\r\n" + error.stack);
+                logMessage("saveData error", error);
             }
         }
     }
@@ -139,7 +108,7 @@ try {
                 this.loadSelectOptions(this._pcAudio, "all");
                 this.loadSelectOptions(this._gmAudio, "self");
             } catch (error) {
-                console.log("Error: " + error + "\r\n" + error.stack);
+                logMessage("View ctor error", error);
             }
         }
 
@@ -166,6 +135,9 @@ try {
 
         get audioClips() { return this._audioClips.value; }
         set audioClips(value) { this._audioClips.value = value; }
+
+        get loadOnStart() { return this._loadOnStart.checked; }
+        set loadOnStart(value) { this._loadOnStart.checked = value; }
 
         bindDefaultTheme = (handler) => { this.addValueEventHandler(this._defaultTheme, "change", handler); }
         bindPcOutput = (handler) => { this.addValueEventHandler(this._pcOutput, "change", handler); }
@@ -203,7 +175,7 @@ try {
                 }
                 select.innerHTML = innerHtml;
             } catch (error) {
-                console.log("Error: " + error);
+                logMessage("loadSelectOptions error", error);
             }
         }
 
@@ -230,10 +202,10 @@ try {
 
                 this.model.onConnect().then(
                     (m) => { this.setupView(m); },
-                    (e) => { console.log("onConnect error: " + e + "\r\n" + e.stack); }
+                    (e) => { logMessage("Controller onConnect error", e); }
                 );
             } catch (error) {
-                console.log("Error: " + error + "\r\n" + error.stack);
+                logMessage("Controller ctor error", error);
             }
         }
 
@@ -262,7 +234,7 @@ try {
                 this.view.bindSubmitButton(this.doSubmit);
                 this.view.bindCancelButton(this.doSubmit);
             } catch (error) {
-                console.log("Error: " + error + "\r\n" + error.stack);
+                logMessage("setupView error", error);
             }
         }
 
@@ -284,7 +256,7 @@ try {
             try {
                 this.model.saveData(doSave);
             } catch (error) {
-                console.log("Error: " + error + "\r\n" + error.stack);
+                logMessage(`doSubmit(${doSave}) error`, error);
             }
         }
     }
@@ -295,5 +267,5 @@ try {
     const app = new Controller(new Model(), new View());
 
 } catch (error) {
-    console.log("Global error: " + e + "\r\n" + e.stack);
+    logMessage("Global error", e);
 }   
