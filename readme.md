@@ -17,10 +17,11 @@ Undecided as of yet.
 # Changelog
 
 ## Unreleased
-- [ ] Overlay interface for accessing the notebook library.   
 - [x] Configuration of library.   
-- [ ] Create and maintain notebooks.   
 - [x] Access to notebooks can be controlled by author. (GM will always have access).   
 - [x] Show list of available notebooks.  
-- [ ] Create or update builtin user guide as a notebook.  
-- [] more to come ..
+- [ ] #1
+- [ ] #2
+- [ ] #3
+- [ ] #4
+- [ ] more to come ..
