@@ -20,8 +20,8 @@ Undecided as of yet.
 - [x] Configuration of library.   
 - [x] Access to notebooks can be controlled by author. (GM will always have access).   
 - [x] Show list of available notebooks.  
-- [ ] #1
-- [ ] #2
-- [ ] #3
-- [ ] #4
+- [ ] https://github.com/tdue21/maptool-notebook/issues/1
+- [ ] https://github.com/tdue21/maptool-notebook/issues/2
+- [ ] https://github.com/tdue21/maptool-notebook/issues/3
+- [ ] https://github.com/tdue21/maptool-notebook/issues/4
 - [ ] more to come ..
