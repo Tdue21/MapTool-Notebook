@@ -1,5 +1,0 @@
-{
-    "playerName": "Thomas",
-    "rollD6": "<a href=\"macro://Dice_Roller@this/text=1d6;value=1d6;tokenName=?all\">1d6</a>",
-    "toHit": "<a href=\"macro://D20_Roller@this/text=+1;value=++1;color=Red?all\">+1</a>"
-}

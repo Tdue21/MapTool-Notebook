@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <link rel="stylesheet" type="text/css" href="../../css/common.css?cachelib=false">
-    <script defer src="../../javascript/jsUtils.js?cachelib=false"></script>
+    <link rel="stylesheet" type="text/css" href="css/common.css?cachelib=false">
+    <script defer src="js/jsUtils.js?cachelib=false"></script>
     <style type="text/css">
         table {
             margin: 0px;
@@ -44,19 +44,19 @@
         <tr><td>[link](url)</td><td><a href="url">link</a></td></tr>
         <tr>
             <td>[1d6](roll "1d6")</td>
-            <td id="rollD6"></td>
+            <td><a href="macro://Dice_Roller@campaign/all/Impersonated?text%3D1d6%3Bvalue%3D1d6%3BtokenName%3D">1d6</a></td>
         </tr>
         <tr>
-            <td>[+1](to hit "1")</td>
-            <td id="toHit"></td>
+            <td>[+1](to hit "+1")</td>
+            <td><a href="macro://D20_Roller@campaign/all/Impersonated?text%3D%2B1%3Bvalue%3D%2B%2B1%3Bcolor%3DRed">+1</a></td>
         </tr>
         <tr>
             <td>![](image url)</td>
-            <td><img src="../../images/mage.png" style="width:50px"/></td>
+            <td><img src="images/mage.png" style="width:50px"/></td>
         </tr>
         <tr>
             <td>[r:getPlayerName()]</td>
-            <td id="getPlayerName"></td>
+            <td id="playerName"></td>
         </tr>
     </table>
 
@@ -105,6 +105,6 @@
             </td>
         </tr>
     </table>
-    <script defer src="./help.js?cachelib=false"></script>
+    <script defer src="./js/help.js?cachelib=false"></script>
 </body>
 </html>

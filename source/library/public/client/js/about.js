@@ -64,6 +64,7 @@ try {
      *************************************************************************/
     const app = new Controller(new Model(), new View());
 
+    console.log("running about app");
 
 } catch (error) {
     logMessage("Error", error);

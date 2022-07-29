@@ -8,7 +8,7 @@ function checkBuiltinUpdates() {
     try {
         MapTool.chat.broadcast("Checking for updates to built-in notebooks.");
 
-        let initialData = getStaticData(UDFNameSpace, "public/data/userguide.json");
+        let initialData = getStaticData(ns, "public/data/userguide.json");
         const data = JSON.parse(initialData);
         const newVersion = data.version;
         const oldVersion = Number(getLibProperty("notebookversion"));
@@ -76,40 +76,5 @@ function fetchNotebooks() {
     }
 }
 
-/**
- * Prints a welcome message in the chat window.
- */
-function printWelcome() {
-    try {
-        const rawData = getLibraryInfo(UDFNameSpace);
-        const libData = (rawData != "") ? JSON.parse(rawData) : { name: "", libVersion: "" };
-        const libName = libData.name;
-        const libVersion = libData.version;
-        const rawUdfs = getDefinedFunctions("json");
-
-        let udfs = rawUdfs != "" ? JSON.parse(rawUdfs) : [];
-        let functions = [];
-        for (let udf of udfs) {
-            if (udf.name.startsWith(UDFPrefix)) {
-                functions.push(udf.name)
-            }
-        }
-
-        const welcome = `
-<div style="width:100%;border:1px solid #888;border-right-width:2px;border-bottom-width:2px;background-color:#ccc;padding:5px">
-    Loaded <b>${libName}</b> library<br>
-    Version: ${libVersion}.<br>
-    User-defined functions: <br>
-    <ul>
-        <li>${functions.join('</li><li>')}</li>
-    </ul>
-</div>`;
-        MapTool.chat.broadcast(welcome);
-    } catch (e) {
-        printException(printWelcome.name, e);
-    }
-}
-
-MTScript.registerMacro("printWelcome", printWelcome);
-MTScript.registerMacro("fetchNotebooks", fetchNotebooks);
-MTScript.registerMacro("checkBuiltinNotebooks", checkBuiltinUpdates);
+//MTScript.registerMacro("fetchNotebooks", fetchNotebooks);
+//MTScript.registerMacro("checkBuiltinNotebooks", checkBuiltinUpdates);

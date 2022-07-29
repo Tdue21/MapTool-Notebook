@@ -36,6 +36,7 @@ try {
                 this.summary = data.summary;
                 this.owner = data.owner;
                 this.private = data.private;
+                this.accent = data.accent;
                 this.pages = data.pages;
             } catch (error) {
                 console.log("Error parsing book: " + error);
@@ -49,11 +50,18 @@ try {
      *************************************************************************/
     class View {
 
+        _accent;
+        _pages = [];
+
         constructor() {
             try {
-                this._title = document.getElementById("title");
-                this._summary = document.getElementById("summary");
+                this._root = document.documentElement;
+                this._title = document.getElementById("bookTitle");
+                this._summary = document.getElementById("summaryText");
+                this._summaryTooltip = document.getElementById("summaryTooltip");
                 this._image = document.getElementById("lock");
+                this._indexPanel = document.getElementById("indexPanel");
+                this._pagePanel = document.getElementById("pagePanel");
                 this._pageIndex = document.getElementById("pageIndex");
             } catch (error) {
                 logMessage("view ctor", error);
@@ -64,31 +72,65 @@ try {
         set title(value) { this._title.innerText = value; }
 
         get summary() { return this._summary.innerText; }
-        set summary(value) { this._summary.innerText = value; }
+        set summary(value) {
+            this._summary.innerText = value;
+            this._summaryTooltip.innerText = value;
+        }
 
-        /**
-         * 
-         * @param {Boolean} value 
-         */
-        setPrivate(isLocked) {
-            this._image.src = (isLocked)
-            ? "../../images/locked.png"
-            : "../../images/unlocked.png";
+        get accent() { return this._accent; }
+        set accent(value) {
+            try {
+                this._accent = value;
+
+                let tc = tinycolor(value);
+
+                let bg = tc.toHexString();
+                let fg = tc.isLight() ? 'black' : 'white';
+
+                let hbg = tc.darken(10).toHexString();
+                let hfg = tinycolor(hbg).isLight() ? 'black' : 'white';
+
+                let abg = tc.darken(20).toHexString();
+                let afg = tinycolor(abg).isLight() ? 'black' : 'white';
+
+                this._root.style.setProperty('--accent-bg', bg);
+                this._root.style.setProperty('--accent-hover-bg', hbg);
+                this._root.style.setProperty('--accent-active-bg', abg);
+
+                this._root.style.setProperty('--accent-fg', fg);
+                this._root.style.setProperty('--accent-hover-fg', hfg);
+                this._root.style.setProperty('--accent-active-fg', afg);
+            } catch (error) {
+                logMessage("set accent", error);
+            }
         }
 
         /**
          * 
          * @param {any[]} pages 
          */
-        setPages(pages) {
-            for(let page of pages) {
-                let item = document.createElement("li");
-                let link = document.createElement("a");
-                link.href = "macro://helpers/ShowPage@lib:net.dovesoft.notebook/none/Impersonated?data%3D" + btoa(JSON.stringify(page));
+        setPages(pages, clickHandler) {
+            for (let page of pages) {
+                let link = document.createElement("span");
                 link.innerText = page.title;
-                item.appendChild(link);
+                link.id = btoa(JSON.stringify(page));
+                link.addEventListener("click", event => {
+                    clickHandler(event.target.id);
+                });
+
+                let div = document.createElement("div");
+                div.className = "entry";
+                div.appendChild(link);
+
+                let item = document.createElement("li");
+                item.appendChild(div);
+
                 this._pageIndex.appendChild(item);
             }
+        }
+
+        showPage(content) {
+            this._pagePanel.innerText = content;
         }
     }
 
@@ -105,11 +147,19 @@ try {
                 (m) => {
                     this.view.title = m.title;
                     this.view.summary = m.summary;
-                    this.view.setPrivate(m.private);
-                    this.view.setPages(m.pages);
+                    this.view.accent = m.accent;
+                    this.view.setPages(m.pages, this.indexClickedHandler);
                 },
                 (e) => { console.log("onConnect error: " + e + "\r\n" + e.stack); }
             );
+        }
+
+        indexClickedHandler = (data) => {
+            if (debugOn) {
+                console.log("clicked: " + data);
+            }
+            let page = JSON.parse(atob(data));
+            this.view.showPage(page.content);
         }
     }
 

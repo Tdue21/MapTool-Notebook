@@ -37,8 +37,10 @@ try {
         _loadData(encoded) {
             try {
                 let decoded = atob(encoded);
+                console.log("Decoded: " + decoded);
                 let data = JSON.parse(decoded);
-                
+                console.log("Data: " + data);
+
                 this.defaultTheme = data.defaultTheme;
                 this.pcOutput = data.pcOutput;
                 this.gmOutput = data.gmOutput;
@@ -75,6 +77,8 @@ try {
                     let json = JSON.stringify(data);
                     encoded = btoa(json);
                 }
+
+                evaluateMacro(`[h:data="${encoded}"][h:broadcast("Settings: " + data)][h:js.saveSetup(data)]`);
 
                 executeMacro("SaveSetupData", encoded);
             } catch (error) {

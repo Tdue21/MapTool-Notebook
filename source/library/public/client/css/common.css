@@ -2,13 +2,13 @@
 @import url('https://fonts.googleapis.com/css2?family=Andada+Pro:ital,wght@0,400;0,700;1,400;1,700&display=swap');
 
 body {
-	font-size:14px;
-    font-family: 'Libre Baskerville',Helvetica,Arial,sans-serif;
+    font-size: 14px;
+    font-family: 'Libre Baskerville', Helvetica, Arial, sans-serif;
     color: rgb(51, 51, 51);
     line-height: 1.5;
     background-color: #ffffff;
-    margin:0px;
-    padding:0px;
+    margin: 0px;
+    padding: 0px;
 }
 
 table caption {
@@ -21,7 +21,12 @@ table caption {
     font-weight: bolder;
 }
 
-h1,h2,h3,h4,h5,h6 {
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
     font-family: 'Andada Pro', serif;
     font-variant: small-caps;
     position: relative;
@@ -95,6 +100,34 @@ hr .softline {
     overflow: hidden;
     box-sizing: content-box;
 }
+
+.tooltip {
+    position: relative;
+    display: inline-block;
+    border-bottom: 1px dotted black;
+}
+
+.tooltip .tooltiptext {
+    visibility: hidden;
+    width: 250px;
+    background-color: white;
+    border: 1px solid black;
+    color: black;
+    text-align: left;
+    border-radius: 3px;
+    padding: 4px;
+    position: absolute;
+    z-index: 1;
+    top: 125%;
+    left: 50%;
+    margin-left: -20px;
+    box-shadow: 5px 5px 5px black;
+}
+
+.tooltip:hover .tooltiptext {
+    visibility: visible;
+}
+
 /*
 h1:hover a.anchor,
 h2:hover a.anchor,

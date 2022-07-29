@@ -1,0 +1,12 @@
+[
+  {
+    "kind": 1,
+    "language": "markdown",
+    "value": "# Intro\r\nThis notebook is used for tracking issues for this project."
+  },
+  {
+    "kind": 2,
+    "language": "github-issues",
+    "value": "repo:Tdue21/MapTool-Notebook is:open"
+  }
+]

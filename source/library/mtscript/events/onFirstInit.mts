@@ -1,7 +1,5 @@
-[h:broadcast("OnInitializingLibrary starting")]
+[h:namespace="net.dovesoft.notebook"]
 
-[h:staticData=data.getStaticData("net.dovesoft.notebook", "public/data/settings.json")]
-[h:base64Data=base64.encode(staticData)]
-[h:setLibProperty("Settings", base64Data)]
-
-[h:broadcast("OnInitializingLibrary done")]
+[h:js.createNS(namespace)]
+[h:js.evalURI(namespace, "lib://" + namespace + "/server/MTShims.js?cachelib=false")]
+[h:js.evalURI(namespace, "lib://" + namespace + "/server/onFirstInit.js?cachelib=false")]

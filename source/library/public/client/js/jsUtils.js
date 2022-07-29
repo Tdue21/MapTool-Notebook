@@ -30,22 +30,24 @@ const executeMacro = (macroName, args = null) => {
  * @param {string} args 
  * @param {function} callBack 
  */
-const evaluateMacro = (args, callBack) => {
+const evaluateMacro = (args, callBack = undefined) => {
     if (debugOn) {
         console.log(`Evaluate macro: '${args}`);
     }
 
     let uri = "macro:helpers/ExecuteMacro@lib:net.dovesoft.notebook";
     let promise = fetch(uri, { method: "POST", body: args });
-    promise.then(
-        r => {
-            r.text().then(
-                d => callBack(d),
-                e1 => logMessage("eval 2", e1)
-            );
-        },
-        e2 => logMessage("eval 1", e2)
-    );
+    if (callBack) {
+        promise.then(
+            r => {
+                r.text().then(
+                    d => callBack(d),
+                    e1 => logMessage("eval 2", e1)
+                );
+            },
+            e2 => logMessage("eval 1", e2)
+        );
+    }
 }
 
 /**

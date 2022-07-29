@@ -195,8 +195,8 @@ try {
      ***************************************************************************/
     const app = new Controller(new Model(), new View());
 
-    evaluateMacro(`[r:getLibProperty("DebugOn", "net.dovesoft.notebook")]`, (e) => console.log("Test 1: " + e));
-    evaluateMacro(`[r:macroLink("Try me", "helpers/showPage@net.dovesoft.notebook", "none", "data=xyz;test=abc")]`, (e) => console.log("Test 2: " + e));
+    // evaluateMacro(`[r:getLibProperty("DebugOn", "net.dovesoft.notebook")]`, (e) => console.log("Test 1: " + e));
+    // evaluateMacro(`[r:macroLink("Try me", "helpers/showPage@net.dovesoft.notebook", "none", "data=xyz;test=abc")]`, (e) => console.log("Test 2: " + e));
 
 } catch (error) {
     logMessage("Error", error);
