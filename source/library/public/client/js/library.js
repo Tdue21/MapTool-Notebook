@@ -8,37 +8,35 @@ try {
     class Model {
         noteBooks = [];
 
-        /**
-         * 
-         */
         constructor() {
             try {
                 let p = MapTool.getUserData();
-                p.then((e) => {
-                    let d = JSON.parse(atob(e));
-                    this.isGM = d.isGM;
-                    this.playerName = d.playerName;
 
-                    for (let item of d.notebooks) {
+                p.then((e) => {
+                    console.log("Data: " + e);
+                    let data = JSON.parse(e);
+                    console.log("Json: " + data);
+                    this.isGM = data.isGM;
+                    this.playerName = data.playerName;
+
+                    for (let item of data.notebooks) {
                         if (!item.private || (item.private && (this.isGM || this.playerName == item.owner))) {
                             this.noteBooks.push(item);
                         }
                     }
+                    console.log("Notebooks: " + this.noteBooks);
+
                     this._connected(this);
                 },
                     (e2) => {
-                        logMessage("Error reading data", e2);
+                        logError("Error reading data", e2);
                         this._connectFailed(e1);
                     });
             } catch (error) {
-                logMessage("Model.ctor error", error);
+                logError("Model.ctor error", error);
             }
         }
 
-        /**
-         * 
-         * @returns 
-         */
         onConnect() {
             try {
                 let p = new Promise((resolve, reject) => {
@@ -48,60 +46,43 @@ try {
                 return p;
 
             } catch (error) {
-                logMessage("onConnect error", error);
+                logError("onConnect error", error);
             }
         }
 
-        /**
-         * 
-         * @returns {string[]} An array of strings containing all the titles in the library.
-         */
-        listTitles = () => this.noteBooks.map(element => element.title);
+        listTitles() {
+            let titles = [];
+            this.noteBooks.forEach(element => {
+                console.log(element);
+                titles.push(element.title);
+            });
+            return titles;
+        };
 
-        /**
-         * 
-         * @param {string} title - Title of the notebook to find.
-         * @returns {}
-         */
         getNoteBook = (title) => this.noteBooks.find(element => element.title === title);
 
-        /**
-         * 
-         */
-        createBook = () => executeMacro("CreateNotebook");
+        createBook = () => evaluateMacro("[h:js.createNotebook()]");
 
-        /**
-         * 
-         * @param {string} title - Title of the notebook to open.
-         */
         openBook(title) {
             let decoded = atob(title);
             let notebook = this.getNoteBook(decoded);
             let data = JSON.stringify(notebook);
 
-            executeMacro("ShowNotebook", btoa(data));
+            evaluateMacro(`[h:data='${data}'][h:js.showNotebook(data)]`);
         }
     }
 
 
     /***************************************************************************
      * 
-     * @class
      ***************************************************************************/
     class View {
-        /**
-         * 
-         */
         constructor() {
             this._createButton = document.getElementById("newBook");
             this._afterBooks = document.getElementById("afterBooks");
             this._body = document.body;
         }
 
-        /**
-         * 
-         * @param {string[]} titles 
-         */
         initialize(titles, handler) {
             try {
 
@@ -109,19 +90,17 @@ try {
                     console.log("Unable to build view.");
                     return;
                 }
+                console.log("Titles: " + titles);
                 titles.forEach(title => this._createBookButton(title, handler));
             } catch (error) {
-                logMessage("Initialize", error);
+                logError("Initialize", error);
             }
         }
 
-        /**
-         * 
-         * @param {*} title 
-         * @param {*} handler 
-         */
         _createBookButton(title, handler) {
             try {
+                console.log("Create book button for: " + title);
+
                 let bookDiv = document.createElement("div");
                 bookDiv.className = "bookDiv";
 
@@ -136,15 +115,11 @@ try {
                 bookDiv.appendChild(button);
                 this._body.insertBefore(bookDiv, this._afterBooks);
             } catch (error) {
-                logMessage("CreateBookButton", error);
+                logError("CreateBookButton", error);
 
             }
         }
 
-        /**
-         * 
-         * @param {*} handler 
-         */
         bindCreateButton(handler) {
             this._createButton.addEventListener("click", event => {
                 handler();
@@ -155,14 +130,8 @@ try {
 
     /***************************************************************************
      * 
-     * @class
      ***************************************************************************/
     class Controller {
-        /**
-         * 
-         * @param {*} model 
-         * @param {*} view 
-         */
         constructor(model, view) {
             try {
                 this.model = model;
@@ -175,7 +144,7 @@ try {
                     },
                     (f) => console.log(f));
             } catch (error) {
-                logMessage("Error", error);
+                logError("Error", error);
             }
         }
 
@@ -188,16 +157,12 @@ try {
          */
         bookButtonHandler = (title) => this.model.openBook(title);
     }
-
-
+ 
     /***************************************************************************
      * Entry point
      ***************************************************************************/
+    console.log("Running library app");
     const app = new Controller(new Model(), new View());
-
-    // evaluateMacro(`[r:getLibProperty("DebugOn", "net.dovesoft.notebook")]`, (e) => console.log("Test 1: " + e));
-    // evaluateMacro(`[r:macroLink("Try me", "helpers/showPage@net.dovesoft.notebook", "none", "data=xyz;test=abc")]`, (e) => console.log("Test 2: " + e));
-
 } catch (error) {
-    logMessage("Error", error);
+    logError("Global error", error);
 }

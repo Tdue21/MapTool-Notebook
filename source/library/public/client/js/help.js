@@ -7,29 +7,24 @@ try {
      ***************************************************************************/
     class Model {
         constructor() {
-            console.log("Entering model.ctor");
             try {
                 let p = MapTool.getUserData();
 
                 p.then(
                     (d) => {
                         try {
-                            console.log(d);
                             this.playerName = d;
                             this._connected(this);
 
                         } catch (error) {
-                            logMessage("Error", error);
+                            logError("Error", error);
                         }
                     }, (e1) => {
-                        logMessage("Error getting library data", e1);
+                        logError("Error getting library data", e1);
                         this._connectFailed(e1);
                     });
             } catch (error) {
-                logMessage("Error", error);
-            }
-            finally {
-                console.log("Exiting model.ctor");
+                logError("Error", error);
             }
         }
 
@@ -61,7 +56,6 @@ try {
      ***************************************************************************/
     class Controller {
         constructor(model, view) {
-            console.log("Entering controller.ctor");
             try {
 
                 this.model = model;
@@ -75,10 +69,7 @@ try {
                 );
 
             } catch (error) {
-                logMessage("Controller.ctor", error);
-
-            } finally {
-                console.log("Exiting controller.ctor");
+                logError("Controller.ctor", error);
             }
         }
     }
@@ -86,8 +77,8 @@ try {
     /***************************************************************************
      * Entry point. 
      ***************************************************************************/
-    const app = new Controller(new Model(), new View());
-
+     console.log("running help app");
+     const app = new Controller(new Model(), new View());
 } catch (error) {
-    logMessage("Error", error);
+    logError("Global error", error);
 }

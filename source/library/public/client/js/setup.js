@@ -13,11 +13,11 @@ try {
                         this._loadData(data);
                         this._connected(this);
                     }, (e1) => {
-                        logMessage("Error getting library data", e1);
+                        logError("Error getting library data", e1);
                         this._connectFailed(e1);
                     });
             } catch (error) {
-                logMessage("Model ctor error", error);
+                logError("Model ctor error", error);
             }
         }
 
@@ -30,16 +30,14 @@ try {
                 return p;
 
             } catch (error) {
-                logMessage("onConnect error", error);
+                logError("onConnect error", error);
             }
         }
 
         _loadData(encoded) {
             try {
                 let decoded = atob(encoded);
-                console.log("Decoded: " + decoded);
                 let data = JSON.parse(decoded);
-                console.log("Data: " + data);
 
                 this.defaultTheme = data.defaultTheme;
                 this.pcOutput = data.pcOutput;
@@ -51,7 +49,7 @@ try {
                 this.audioClips = data.audioClips.replaceAll(",", "\n");
                 this.loadOnStart = data.loadOnStart;
             } catch (error) {
-                logMessage("loadData error", error);
+                logError("loadData error", error);
             }
         }
 
@@ -77,12 +75,9 @@ try {
                     let json = JSON.stringify(data);
                     encoded = btoa(json);
                 }
-
                 evaluateMacro(`[h:data="${encoded}"][h:broadcast("Settings: " + data)][h:js.saveSetup(data)]`);
-
-                executeMacro("SaveSetupData", encoded);
             } catch (error) {
-                logMessage("saveData error", error);
+                logError("saveData error", error);
             }
         }
     }
@@ -112,7 +107,7 @@ try {
                 this.loadSelectOptions(this._pcAudio, "all");
                 this.loadSelectOptions(this._gmAudio, "self");
             } catch (error) {
-                logMessage("View ctor error", error);
+                logError("View ctor error", error);
             }
         }
 
@@ -179,7 +174,7 @@ try {
                 }
                 select.innerHTML = innerHtml;
             } catch (error) {
-                logMessage("loadSelectOptions error", error);
+                logError("loadSelectOptions error", error);
             }
         }
 
@@ -206,10 +201,10 @@ try {
 
                 this.model.onConnect().then(
                     (m) => { this.setupView(m); },
-                    (e) => { logMessage("Controller onConnect error", e); }
+                    (e) => { logError("Controller onConnect error", e); }
                 );
             } catch (error) {
-                logMessage("Controller ctor error", error);
+                logError("Controller ctor error", error);
             }
         }
 
@@ -238,7 +233,7 @@ try {
                 this.view.bindSubmitButton(this.doSubmit);
                 this.view.bindCancelButton(this.doSubmit);
             } catch (error) {
-                logMessage("setupView error", error);
+                logError("setupView error", error);
             }
         }
 
@@ -260,7 +255,7 @@ try {
             try {
                 this.model.saveData(doSave);
             } catch (error) {
-                logMessage(`doSubmit(${doSave}) error`, error);
+                logError(`doSubmit(${doSave}) error`, error);
             }
         }
     }
@@ -268,8 +263,8 @@ try {
     /***************************************************************************
      * Entry point. 
      ***************************************************************************/
+    console.log("running setup app");
     const app = new Controller(new Model(), new View());
-
 } catch (error) {
-    logMessage("Global error", e);
+    logError("Global error", e);
 }   

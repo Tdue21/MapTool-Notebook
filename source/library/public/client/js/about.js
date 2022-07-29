@@ -16,7 +16,7 @@ try {
                     this._connected(this);
                 },
                 (e2) => {
-                    logMessage("Error reading version", e2);
+                    logError("Error reading version", e2);
                     this._connectFailed(e2);
                 });
         }
@@ -62,10 +62,9 @@ try {
     /*************************************************************************
      * Entry point. 
      *************************************************************************/
-    const app = new Controller(new Model(), new View());
-
-    console.log("running about app");
+     console.log("running about app");
+     const app = new Controller(new Model(), new View());
 
 } catch (error) {
-    logMessage("Error", error);
+    logError("Global error", error);
 }
