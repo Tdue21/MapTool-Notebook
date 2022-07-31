@@ -13,20 +13,23 @@ try {
                 let p = MapTool.getUserData();
 
                 p.then((e) => {
-                    console.log("Data: " + e);
-                    let data = JSON.parse(e);
-                    console.log("Json: " + data);
-                    this.isGM = data.isGM;
-                    this.playerName = data.playerName;
+                    try {
+                        let text = atob(e);
+                        let data = JSON.parse(text);
 
-                    for (let item of data.notebooks) {
-                        if (!item.private || (item.private && (this.isGM || this.playerName == item.owner))) {
-                            this.noteBooks.push(item);
+                        this.isGM = data.isGM;
+                        this.playerName = data.playerName;
+
+                        for (let item of data.notebooks) {
+                            if (!item.private || (item.private && (this.isGM || this.playerName == item.owner))) {
+                                this.noteBooks.push(item);
+                            }
                         }
-                    }
-                    console.log("Notebooks: " + this.noteBooks);
 
-                    this._connected(this);
+                        this._connected(this);
+                    } catch (error) {
+                        logError("Error parsing data", error);
+                    }
                 },
                     (e2) => {
                         logError("Error reading data", e2);
@@ -52,10 +55,14 @@ try {
 
         listTitles() {
             let titles = [];
-            this.noteBooks.forEach(element => {
-                console.log(element);
-                titles.push(element.title);
-            });
+            for(let item of this.noteBooks) {
+                let title = {
+                    "title": item.title,
+                    "summary": item.summary
+                };
+                titles.push(title);
+            }
+            
             return titles;
         };
 
@@ -63,12 +70,17 @@ try {
 
         createBook = () => evaluateMacro("[h:js.createNotebook()]");
 
-        openBook(title) {
-            let decoded = atob(title);
-            let notebook = this.getNoteBook(decoded);
-            let data = JSON.stringify(notebook);
+        openBook(item) {
+            try {
+            let decoded = atob(item);
+            let json = JSON.parse(decoded);
+            let notebook = this.getNoteBook(json.title);
+            let data = btoa(JSON.stringify(notebook));
 
             evaluateMacro(`[h:data='${data}'][h:js.showNotebook(data)]`);
+            } catch(error) {
+                logError("openBook error", error);
+            }
         }
     }
 
@@ -83,31 +95,29 @@ try {
             this._body = document.body;
         }
 
-        initialize(titles, handler) {
+        initialize(items, handler) {
             try {
 
-                if (titles == undefined) {
+                if (items == undefined) {
                     console.log("Unable to build view.");
                     return;
                 }
-                console.log("Titles: " + titles);
-                titles.forEach(title => this._createBookButton(title, handler));
+                items.forEach(item => this._createBookButton(item, handler));
             } catch (error) {
                 logError("Initialize", error);
             }
         }
 
-        _createBookButton(title, handler) {
+        _createBookButton(item, handler) {
             try {
-                console.log("Create book button for: " + title);
-
                 let bookDiv = document.createElement("div");
                 bookDiv.className = "bookDiv";
 
                 let button = document.createElement("button");
-                button.id = btoa(title);
+                button.id = btoa(JSON.stringify(item));
                 button.className = "button";
-                button.innerText = title;
+                button.innerText = decodeURIComponent(item.title);
+                button.title = decodeURIComponent(item.summary);
                 button.addEventListener("click", event => {
                     handler(event.target.id);
                 });
@@ -157,7 +167,7 @@ try {
          */
         bookButtonHandler = (title) => this.model.openBook(title);
     }
- 
+
     /***************************************************************************
      * Entry point
      ***************************************************************************/

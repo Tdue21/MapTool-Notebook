@@ -22,9 +22,7 @@ const logMessage = (message) => console.log(message);
  * @param {function} callBack 
  */
 const evaluateMacro = (args, callBack = undefined) => {
-    if (debugOn) {
-        console.log(`Evaluate macro: '${args}`);
-    }
+    console.log(`Evaluate macro: '${args}`);
 
     let uri = "macro:EvaluateMacro@lib:net.dovesoft.notebook";
     let promise = fetch(uri, { method: "POST", body: args });

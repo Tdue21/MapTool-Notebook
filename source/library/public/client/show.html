@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <script defer src="https://cdn.jsdelivr.net/npm/tinycolor2@1.4.2/tinycolor.min.js"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/marked@4.0.18/lib/marked.umd.min.js"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/dompurify@2.3.10/dist/purify.min.js"></script>
+
+    <script defer src="./js/Mocks.js?cachelib=false"></script>
+    <script defer src="./js/jsUtils.js?cachelib=false"></script>
+
+    <link rel="stylesheet" type="text/css" href="./css/common.css?cachelib=false">
+
+    <style>
+        :root {
+            --accent-bg: #a8a5ca;
+            --accent-fg: #000;
+            --accent-hover-bg:#837dc9;
+            --accent-hover-fg:#000;
+            --accent-active-bg:#494292;
+            --accent-active-fg:#fff;
+        }
+        html {
+            width: 100%;
+            height: 100%;
+            padding: 0px;
+            margin: 0px;
+            overflow: hidden;
+        }
+
+        body {
+            width: 100%;
+            height: 100%;
+            padding: 0px;
+            margin: 0px;
+        }
+
+        div {
+            background-color: transparent;
+            color: black;
+            border: none;
+            margin: 0px;
+            padding: 0px;
+        }
+
+        #bookHeader {
+            height: 70px;
+            width: calc(100% - 10px);
+            margin: 0px;
+            padding-left: 5px;
+            padding-right: 5px;
+            margin-bottom: 5px;
+            border-bottom: #000 1px solid;
+        }
+
+        #bookheader>h1 {
+            margin: 0px;
+            padding: 0px;
+        }
+
+        #summary {
+            margin: 0px;
+            padding: 0px;
+            height: 40px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            color:#8d8d8d;
+        }
+
+        #bookContent {
+            width: 100%;
+            height: calc(100% - 117px);
+            margin: 0px;
+            padding: 0px;
+            display: grid;
+            grid-template-columns: 200px 3fr;
+        }
+
+        #bookFooter {
+            background-color: rgb(180, 196, 226);
+            width: calc(100% - 10px);
+            height: 25px;
+            margin:0px;
+            padding: 5px;
+            border-top: #000 1px solid;
+        }  
+
+        #pageIndex {
+            list-style-type: none;
+            padding: 0px;
+            margin: 5px;
+        }
+
+        #indexPanel {
+            float: left;
+            padding: 5px;
+            margin: 0px;
+            vertical-align: top;
+            height: calc(100% - 15px);
+            background-color: var(--accent-bg);
+            color: var(--accent-fg)
+        }
+
+        #indexPanel > h2 {
+            margin: 0px;
+        }
+
+        #pagePanel {
+            float: right;
+            padding: 5px;
+            margin:0px;
+            height: calc(100% - 10px);
+            background-color: #f8f8f8;
+            overflow: scroll;
+        }
+
+        .entry {
+            background-color: var(--accent-bg);
+            color: var(--accent-fg);
+        }
+
+        .entry:hover {
+            background-color: var(--accent-hover-bg);
+            color: var(--accent-hover-fg);
+            cursor: pointer;
+        }
+        .entry:active {
+            background-color: var(--accent-active-bg);
+            color: var(--accent-active-fg);
+            cursor: pointer;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="bookHeader">
+        <h1>
+            <img src="./images/quill-paper.png" width="32px"
+                style="margin: 0px; padding: 0px; vertical-align: bottom;">
+            <span id="bookTitle"></span>
+        </h1>
+
+        <div id="summary" class="toolip">
+            <span id="summaryText" />
+            <span id="summaryTooltip" class="tooltiptext" />
+        </div>
+    </div>
+
+    <div id="bookContent">
+        <div id="indexPanel">
+            <h2>
+                <span id="pageHeader">Pages</span>
+            </h2>
+            <p>
+                <ul id="pageIndex"></ul>
+            </p>
+        </div>
+
+        <div id="pagePanel">
+
+        </div>
+    </div>
+
+    <div id="bookFooter">
+
+    </div>
+
+    <script defer src="./js/show.js?cachelib=false"></script>
+</body>
+
+</html>

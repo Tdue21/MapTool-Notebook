@@ -17,6 +17,8 @@ Latest version: ${latest}.<br>`;
     welcome += `</div>`;
 
     MapTool.chat.broadcast(welcome);
+
+    showOverlay();
 } catch (e) {
     MT.printException(printWelcome.name, e);
 }
