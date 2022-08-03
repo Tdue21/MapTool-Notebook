@@ -1,61 +1,9 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 
 <head>
+    <link rel="stylesheet" href="./css/overlay.css?cachelib=false">
     <script defer src="./js/jsUtils.js?cachelib=false"></script>
-    <style>
-        html,
-        body {
-            background-color: transparent;
-        }
-
-        .overlay {
-            border: 2px solid black;
-            border-radius: 8px;
-            background-color: #ddd;
-            position: absolute;
-            top: calc(100% - 100px);
-            left: 5px;
-            margin:0px;
-            padding:3px;
-        }
-
-        img {
-            border: none;
-            opacity: 50%;
-            width: 16px;
-            height: 16px;
-        }
-
-        img:hover {
-            opacity: 100%;
-            cursor: pointer;
-        }
-
-        #main {
-            display: block; 
-            margin:0px;
-            padding:0px;
-        }
-
-        #options {
-            display: block; 
-            margin:0px;
-            padding:0px;
-            margin-left:5px;
-            margin-top:-5px;
-        }
-        #quill {
-            width:64px;
-            height:64px;
-            margin-left:5px;
-        }      
-
-        #settings {
-            margin-left:5px;
-            margin-right:10px;
-        }
-    </style>
 </head>
 
 <body>

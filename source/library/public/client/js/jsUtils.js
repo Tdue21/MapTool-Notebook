@@ -1,20 +1,18 @@
-const newLine = "\r\n";
 const namespace = "net.dovesoft.notebook";
-let debugOn = false;
 
 /**
  * 
  * @param {string} message 
  * @param {Error} error 
  */
-const logError = (message, error) => console.log(`${message}: ${error}${newLine}${error.stack}`);
+const logError = (message, error) => console.log(`<div style="width:200px;overflow:auto"><pre>${message}: ${error}\r\n${error.stack}</pre></div>`);
 
 /**
  * 
  * @param {string} message 
  * @returns 
  */
-const logMessage = (message) => console.log(message);
+const logMessage = (message) => console.log(`<div style="width:200px;overflow:auto"><pre>${message}</pre></div>`);
 
 /**
  * 
@@ -22,8 +20,6 @@ const logMessage = (message) => console.log(message);
  * @param {function} callBack 
  */
 const evaluateMacro = (args, callBack = undefined) => {
-    console.log(`Evaluate macro: '${args}`);
-
     let uri = "macro:EvaluateMacro@lib:net.dovesoft.notebook";
     let promise = fetch(uri, { method: "POST", body: args });
     if (callBack) {
@@ -37,15 +33,4 @@ const evaluateMacro = (args, callBack = undefined) => {
             e2 => logError("eval 1", e2)
         );
     }
-}
-
-/**
- * Reads the "DebugOn" libProp from the library and set the "debugOn" global variable.
- */
-try {
-    evaluateMacro(`[r:js.getDebug()]`, result => {
-        debugOn = result === 1;
-    });
-} catch (error) {
-    logError("Failed to read doDebug: " + error);
 }

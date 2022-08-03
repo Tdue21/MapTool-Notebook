@@ -13,6 +13,16 @@ function getDialogOptions(width, height, data) {
 
 
 /**
+ * Helper function for reading the latest version of the library from github.
+ * @returns A string containing the latest version.
+ */
+function getLatestVersion() {
+    const updateLink = "https://raw.githubusercontent.com/Tdue21/MapTool-Notebook/master/build/latest.txt";
+    const latest = MTScript.evalMacro(`[r:REST.get("${updateLink}")]`);
+    return latest;
+}
+
+/**
  * Function for showing the Notebook About dialog.
  */
 function showAbout() {
@@ -23,7 +33,7 @@ function showAbout() {
 
         MT.showDialog("About", `lib://${ns}/client/about.html`, options);
     } catch (error) {
-        MT.printException(showAbout.name, error);
+        MT.printException("showAbout", error);
     }
 }
 MTScript.registerMacro("showAbout", showAbout);
@@ -39,7 +49,7 @@ function showHelp() {
 
         MT.showDialog("Markdown Help", `Lib://${ns}/client/help.html`, options);
     } catch (error) {
-        MT.printException(showHelp.name, error);
+        MT.printException("showHelp", error);
     }
 }
 MTScript.registerMacro("showHelp", showHelp);
@@ -76,7 +86,7 @@ function showLibrary() {
 
         MT.showFrame("Notebook Library", `lib://${ns}/client/library.html`, options);
     } catch (error) {
-        MT.printException(showLibrary.name, error);
+        MT.printException("showLibrary", error);
     }
 }
 MTScript.registerMacro("showLibrary", showLibrary);
@@ -95,7 +105,7 @@ function showNotebook(data) {
 
         MT.showDialog(`Notebook - ${book.title}`, `lib://${ns}/client/show.html`, options);
     } catch (error) {
-        MT.printException(showNotebook.name, error);
+        MT.printException("showNotebook", error);
     }
 }
 MTScript.registerMacro("showNotebook", showNotebook);
@@ -109,13 +119,9 @@ function showOverlay() {
         MT.closeOverlay("Library");
 
         let gm = MTScript.execMacro("[r:isGM()]");
-        let json = { isGM: Number(gm) };
-        let data = JSON.stringify(json);
-        let encoded = MT.btoa(data);
-
-        MT.showOverlay("Library", `lib://${ns}/client/overlay.html`, `zorder=90; value=${encoded}`);
+        MT.showOverlay("Library", `lib://${ns}/client/overlay.html`, `zorder=90; value=${gm}`);
     } catch (error) {
-        MT.printException(showOverlay.name, error);
+        MT.printException("showOverlay", error);
     }
 }
 MTScript.registerMacro("showOverlay", showOverlay);
@@ -126,8 +132,12 @@ MTScript.registerMacro("showOverlay", showOverlay);
  * Primarily used for testing.
  */
 function resetLibrary() {
-    let data = MT.getStaticData(ns, "/public/server/data/userguide.json");
-    MT.setLibProperty("notebooks", data, ns);
+    try {
+        let data = MT.getStaticData(ns, "/public/server/data/userguide.json");
+        MT.setLibProperty("notebooks", data, ns);
+    } catch (error) {
+        MT.printException("resetLibrary", error);
+    }
 }
 MTScript.registerMacro("resetLibrary", resetLibrary);
 
@@ -137,28 +147,16 @@ MTScript.registerMacro("resetLibrary", resetLibrary);
  * @param {string} data 
  */
 function saveSetup(data) {
-    if (data != "") {
-        MT.setLibProperty("Settings", data, ns);
+    try {
+        if (data != "") {
+            MT.setLibProperty("Settings", data, ns);
+        }
+        MT.closeDialog("Notebook General Setup");
+    } catch (error) {
+        MT.printException("saveSetup", error);
     }
-    MT.closeDialog("Notebook General Setup");
 }
 MTScript.registerMacro("saveSetup", saveSetup);
-
-
-/**
- * 
- * @param {boolean} enable - true to enable debug logging.
- */
-function setDebug(enable) { MT.setLibProperty("DebugOn", enable, ns); }
-MTScript.registerMacro("setDebug", setDebug);
-
-
-/**
- * 
- * @returns true if debug logging is enabled.
- */
-function getDebug() { return MT.getLibProperty("DebugOn", ns); }
-MTScript.registerMacro("getDebug", getDebug);
 
 
 /**
@@ -166,9 +164,54 @@ MTScript.registerMacro("getDebug", getDebug);
  * Primarily used for testing.
  */
 function resetSettings() {
-    let data = MT.getStaticData(ns, "/public/server/data/settings.json");
-    let encoded = MT.btoa(data);
+    try {
+        let data = MT.getStaticData(ns, "/public/server/data/settings.json");
+        let encoded = MT.btoa(data);
 
-    MT.setLibProperty("Settings", encoded, ns);
+        MT.setLibProperty("Settings", encoded, ns);
+    } catch (error) {
+        MT.printException("resetSettings", error);
+    }
 }
 MTScript.registerMacro("resetSettings", resetSettings);
+
+
+/**
+ * 
+ */
+function showWelcome() {
+    try {
+        let data = MT.getStaticData(ns, "/public/server/data/welcome.html");
+        let gitLatest = getLatestVersion();
+        let libData = MT.getLibraryInfo(ns);
+
+        let final = evalTemplate(data, {
+            latest: gitLatest,
+            version: libData.version,
+            doUpdate: gitLatest.localeCompare(libData.version) > 0
+        });
+        MT.broadcast(final);
+    } catch (error) {
+        MT.printException("showWelcome", error);
+    }
+}
+
+/**
+ * Input a string containing a template, which can be anything really, but 
+ * usually html and a json object containing options for the template. 
+ * @param {string} template - string with the template.
+ * @param {json} options - json object with options.
+ * @returns {string} - returns the finished string.
+ */
+function evalTemplate(template, options) {
+    let wrapper = "";
+    try {
+        wrapper = `"use strict";\r\n`;
+        wrapper += `let options=${JSON.stringify(options)};\r\n`;
+        wrapper += `let html=\`${template}\`;\r\n\r\nreturn html`;
+
+        return Function(wrapper)();
+    } catch (error) {
+        MT.printException("evalTemplate: " + wrapper, error);
+    }
+}

@@ -1,0 +1,15 @@
+<div id="outer" style="margin: 2px; padding: 0px; border-right: 2px solid #ccc; border-bottom: 2px solid #ccc;">
+    <div id="inner" style="margin: 0px; width: 100%; border: 1px solid #888; background-color: #ccc; padding: 5px; ">
+        <h1 style="font-size:16pt;margin:0px;padding:0px;border-bottom:1px solid #888">MapTool Notebooks</h1>
+        <p>Welcome to MapTool Notebooks.</p>
+        <p>The currently loaded version is: ${options.version}.<br>
+            The latest version available is: ${options.latest}.</p>
+        ${options.doUpdate ? `
+        <p>
+            <b>An upload is available.</b><br>
+            <a href="https://github.com/Tdue21/MapTool-Notebook/releases/download/v${options.latest}/Notebook-${options.latest}.mtlib"
+                style="color: blue; font-weight: 900;">Download now!</a>
+        </p>
+        ` : ""}
+    </div>
+</div>

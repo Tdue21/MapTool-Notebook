@@ -62,7 +62,6 @@ try {
     /*************************************************************************
      * Entry point. 
      *************************************************************************/
-     console.log("running about app");
      const app = new Controller(new Model(), new View());
 
 } catch (error) {

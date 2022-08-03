@@ -7,6 +7,15 @@ const ns = "net.dovesoft.notebook";
  */
 class MT {
     /**
+     * 
+     * @param {string} message - Message to broadcast to chat.
+     */
+    static broadcast(message) {
+        MapTool.chat.broadcast(message);
+    }
+
+    
+    /**
      * Returns the name of the current player.
      * @returns {string} Playername.
      */
@@ -73,7 +82,7 @@ class MT {
      * @param {string} error 
      */
     static printException (caller, error) {
-        MapTool.chat.broadcast(`<pre>Exception in ${caller}: ${error}\r\n${error.stack}</pre>`);
+        MapTool.chat.broadcast(`<div style="width:200px;overflow:auto"><pre>Exception in ${caller}: ${error}\r\n${error.stack}</pre></div>`);
     }
 
 
@@ -83,7 +92,7 @@ class MT {
      * @param {string} message 
      */
     static printMessage(caller, message) {
-        MapTool.chat.broadcast(`<pre>Message from ${caller}: ${message}</pre>`);
+        MapTool.chat.broadcast(`<div style="width:200px;overflow:auto"><pre>Message from ${caller}: ${message}</pre></div>`);
     }
 
 

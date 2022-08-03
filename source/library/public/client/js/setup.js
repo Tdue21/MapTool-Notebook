@@ -75,7 +75,8 @@ try {
                     let json = JSON.stringify(data);
                     encoded = btoa(json);
                 }
-                evaluateMacro(`[h:data="${encoded}"][h:broadcast("Settings: " + data)][h:js.saveSetup(data)]`);
+                evaluateMacro(`[h:data="${encoded}"][h:js.saveSetup(data)]`);
+                //evaluateMacro(`[h:data="${encoded}"][h:broadcast("Settings: " + data)][h:js.saveSetup(data)]`);
             } catch (error) {
                 logError("saveData error", error);
             }
@@ -155,12 +156,12 @@ try {
         }
 
         bindSubmitButton(handler) {
-            this._saveButton.addEventListener("click", event => {
+            this._saveButton.addEventListener("click", () => {
                 handler(true);
             });
         }
         bindCancelButton(handler) {
-            this._cancelButton.addEventListener("click", event => {
+            this._cancelButton.addEventListener("click", () => {
                 handler(false);
             });
         }
@@ -263,7 +264,6 @@ try {
     /***************************************************************************
      * Entry point. 
      ***************************************************************************/
-    console.log("running setup app");
     const app = new Controller(new Model(), new View());
 } catch (error) {
     logError("Global error", e);

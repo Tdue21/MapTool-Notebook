@@ -9,11 +9,17 @@ try {
     class Model {
 
         constructor() {
-            evaluateMacro("[r:isGM()]", d => {
-                console.log("Received 2: " + d);
-                this._isGM = d == 1;
-                this._connected(this);
-            });
+            let p = MapTool.getUserData();
+            p.then(
+                (d) => {
+                    console.log("Received 2: " + d);
+                    this._isGM = d == 1;
+                    this._connected(this);
+                },
+                (e) => {
+                    logError("Unable to get data", e);
+                }
+            );
         }
 
         onConnect() {
@@ -138,7 +144,6 @@ try {
     /*************************************************************************
      * Entry point. 
      *************************************************************************/
-    console.log("running overlay app");
     const app = new Controller(new Model(), new View());
 
 } catch (error) {

@@ -171,7 +171,6 @@ try {
     /***************************************************************************
      * Entry point
      ***************************************************************************/
-    console.log("Running library app");
     const app = new Controller(new Model(), new View());
 } catch (error) {
     logError("Global error", error);

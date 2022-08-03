@@ -77,7 +77,6 @@ try {
     /***************************************************************************
      * Entry point. 
      ***************************************************************************/
-     console.log("running help app");
      const app = new Controller(new Model(), new View());
 } catch (error) {
     logError("Global error", error);
