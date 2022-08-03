@@ -26,6 +26,15 @@ try {
             return p;
         }
 
+        getPageContent(name) {
+            let page = this.pages.find(page => page.name === name);
+            if (page) {
+                return page.content;
+            } else {
+                return "Undefined :(";
+            }
+        }
+
         _parseData(d) {
             try {
 
@@ -39,6 +48,16 @@ try {
                     this.accent = data.accent;
                 }
                 this.pages = data.pages;
+                for (let page of this.pages) {
+                    if (page.uri) {
+                        evaluateMacro(`[h:uri="${page.uri}"][h:ns="${namespace}"][r:data.getStaticData(ns, uri)]`, data => {
+                            page.content = data;
+                            page.readOnly = true;
+                        });
+                    } else {
+                        page.readOnly = false;
+                    }
+                }
             } catch (error) {
                 console.log("Error parsing book: " + error);
             }
@@ -115,7 +134,7 @@ try {
             for (let page of pages) {
                 let link = document.createElement("span");
                 link.innerText = page.name;
-                link.id = btoa(JSON.stringify(page));
+                link.id = btoa(page.name);
                 link.addEventListener("click", event => {
                     clickHandler(event.target.id);
                 });
@@ -132,7 +151,7 @@ try {
         }
 
         showPage(content) {
-            this._pagePanel.innerText = content;
+            this._pagePanel.innerHTML = marked.parse(content);
         }
     }
 
@@ -157,11 +176,14 @@ try {
         }
 
         indexClickedHandler = (data) => {
-            if (debugOn) {
-                console.log("clicked: " + data);
+            try {
+                let name = atob(data);
+                let content = this.model.getPageContent(name);
+                this.view.showPage(content);
+
+            } catch (error) {
+                logError("Error onClick", error);
             }
-            let page = JSON.parse(atob(data));
-            this.view.showPage(page.content);
         }
     }
 

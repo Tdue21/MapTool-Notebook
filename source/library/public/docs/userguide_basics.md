@@ -14,7 +14,7 @@ with some additions. These additions will be explained later in this guide.
 As you will probably already have noticed the Notebook library adds an overlay to MapTool called "Library".   
 This overlay is available through some icons in the lower left corner of the map view. 
 
-[[Insert image of entry point]]
+![The Library entry point](lib://net.dovesoft.notebook/docs/overlay.png)
 
 As you can see, there are three icons here. A book, a gear and a question mark. 
 
@@ -24,11 +24,11 @@ As you can see, there are three icons here. A book, a gear and a question mark.
 
 ### The Notebook Library
 
-[[Insert image of the library frame]]
+![The Library frame](lib://net.dovesoft.notebook/docs/library.png)
 
 ### General setup
 
-[[Insert image of the setup dialog]]
+![The setup dialog](lib://net.dovesoft.notebook/docs/setup.png)
 
 ### About
 This is just an about dialog, nothing fancy here. 
