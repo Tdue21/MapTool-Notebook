@@ -1,36 +1,57 @@
+[data-tooltip] {
+	display: inline-block;
+}
+[data-tooltip]:hover {
+	position: relative;
+}
+
+[data-tooltip]:hover::before {
+	all: initial;
+	font-family: 'Libre Baskerville';
+	font-weight: bold;
+	border-radius: 3px;
+	padding: 4px;
+	border: 1px solid #222;
+	background-color: white;
+	content: attr(data-tooltip);
+	color: #222;
+	position: absolute;
+	bottom: 50%;
+	left: 50px;
+	width: max-content;
+	transform: translate(-50%, -20%);
+	margin-bottom: 10px;
+	text-align: center;
+	font-size: 12px;
+    box-shadow:3px 3px 5px black; 
+	z-index: 10;
+}
+
+/*
 
 .tooltip {
     position: relative;
     display: inline-block;
     border-bottom: 1px dotted black;
-}
-
-.tooltip .tooltiptext {
+  }
+  
+  .tooltip .tooltiptext {
     visibility: hidden;
-    width: 200px;
-    background-color: black;
-    color: #fff;
-    text-align: center;
-    border-radius: 6px;
-    padding: 5px;
+    width: 250px;
+    background-color: white;
+    border: 1px solid black;
+    color: black;
+    text-align: left;
+    border-radius: 4px;
+    padding: 4px;
     position: absolute;
     z-index: 1;
-    top: 150%;
-    left: -75%;
-    margin-left: -60px;
-}
-
-.tooltip .tooltiptext::after {
-    content: "";
-    position: absolute;
-    bottom: 100%;
+    top: 125%;
     left: 50%;
-    margin-left: -5px;
-    border-width: 5px;
-    border-style: solid;
-    border-color: transparent transparent black transparent;
-}
-
-.tooltip:hover .tooltiptext {
+    margin-left: -20px;
+    box-shadow:5px 5px 5px black; 
+  }
+  
+  .tooltip:hover .tooltiptext {
     visibility: visible;
-}
+  }*/

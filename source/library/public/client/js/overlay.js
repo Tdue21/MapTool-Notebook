@@ -1,151 +1,143 @@
 "use strict";
 
-try {
-    /*************************************************************************
-     * Overlay model. 
-     * 
-     * @class
-     *************************************************************************/
-    class Model {
-
-        constructor() {
-            let p = MapTool.getUserData();
-            p.then(
-                (d) => {
-                    console.log("Received 2: " + d);
-                    this._isGM = d == 1;
-                    this._connected(this);
-                },
-                (e) => {
-                    logError("Unable to get data", e);
-                }
-            );
-        }
-
-        onConnect() {
-            try {
-                let p = new Promise((resolve, reject) => {
-                    this._connected = resolve;
-                    this._connectFailed = reject;
-                });
-                return p;
-
-            } catch (error) {
-                logError("onConnect error", error);
-            }
-        }
-
-        get isGM() {
-            return this._isGM;
-        }
-
-        openLibrary() {
-            try {
-                evaluateMacro("[h:js.showLibrary()]");
-            } catch (error) {
-                logError("model.openLibrary", error);
-            }
-        }
-
-        openSettings() {
-            try {
-                evaluateMacro("[h:js.showSetup()]");
-            } catch (error) {
-                logError("model.openSettings", error);
-            }
-        }
-
-        openAbout() {
-            try {
-                evaluateMacro("[h:js.showAbout()]");
-            } catch (error) {
-                logError("model.openAbout", error);
-            }
-        }
+/**
+ * Overlay Model 
+ * This class handles business logic for the overlay. 
+ */
+class OverlayModel extends AbstractBaseModel {
+    /**
+     * Handles instantiation logic for the model. 
+     */
+    constructor() {
+        super();
+        evaluateMacro("[r:json.set('{}', 'gm', isGM(), 'player', getPlayerName())]", json => {
+            let data = JSON.parse(json);
+            this._isGM = data.gm == 1;
+            this._player = data.player;
+            this._connected(this);
+        });
     }
 
-    /*************************************************************************
-     * 
-     *************************************************************************/
-    class View {
-        constructor() {
-            this._library = document.getElementById("quill");
-            this._settings = document.getElementById("settings");
-            this._about = document.getElementById("about");
-        }
 
-        isGm(isgm) {
-            // if (isgm) {
-            //     this._settings.style.visibility = "hidden";
-            // }
-        }
+    /** 
+     * Read-only property - Returns true if the current player is GM, otherwise false.
+    */
+    get isGM() { return this._isGM; }
 
-        bindLibraryClick = (handler) => this._library.addEventListener("click", () => handler());
 
-        bindSettingsClick = (handler) => this._settings.addEventListener("click", () => handler());
+    /**
+     * Read-only property - Returns the name of the current player. 
+     */
+    get playerName() { return this._player; }
 
-        bindAboutClick = (handler) => this._about.addEventListener("click", () => handler());
-    }
 
-    /*************************************************************************
-     * 
-     *************************************************************************/
-    class Controller {
-        constructor(model, view) {
-            try {
-                this.model = model;
-                this.view = view;
+    /**
+     * Calls the server side logic for displaying the library frame. 
+     */
+    openLibrary = () => evaluateMacro("[h:js.showLibrary()]");
 
-                this.model.onConnect().then(
-                    (m) => {
-                        try {
-                            this.view.bindLibraryClick(this.openLibraryHandler);
-                            this.view.bindSettingsClick(this.openSettingsHandler);
-                            this.view.bindAboutClick(this.openAboutHandler);
-                        
-                            this.view.setGM(this.model.isGM);
-                        } catch (error) {
-                            logError("controller.ctor", e);
-                        }
-                    },
-                    (e) => {
-                        logError("controller.ctor -> model.onConnect", e);
-                    });
-            } catch (error) {
-                logError("Controller ctor", error);
-            }
-        }
 
-        openLibraryHandler = () => {
-            try {
-                this.model.openLibrary();
-            } catch (error) {
-                logError("Controller openLibraryHandler", error);
-            }
-        }
+    /**
+     * Calls the server side logic for displaying the edit book dialog. 
+     */
+    addBook = () => evaluateMacro("[h:js.addBook()]");
 
-        openSettingsHandler = () => {
-            try {
-                this.model.openSettings();
-            } catch (error) {
-                logError("Controller openSettingsHandler", error);
-            }
-        }
 
-        openAboutHandler = () => {
-            try {
-                this.model.openAbout();
-            } catch (error) {
-                logError("Controller openAboutHandler", error);
-            }
-        }
-    }
+    /**
+     * Calls the server side logic for displaying the Notebook general setup dialog. 
+     */
+    openSettings = () => evaluateMacro("[h:js.showSetup()]");
 
-    /*************************************************************************
-     * Entry point. 
-     *************************************************************************/
-    const app = new Controller(new Model(), new View());
 
-} catch (error) {
-    logError("Global error", error);
+    /**
+     * Calls the server side logic for displaying the About dialog. 
+     */
+    openAbout = () => evaluateMacro("[h:js.showAbout()]");
 }
+
+
+/**
+ * Overlay View
+ * This class contains the logic for handling view related logic in the overlay. 
+ */
+class OverlayView extends AbstractBaseView {
+    /**
+     * Handles instantiation logic for the view. 
+     */
+    constructor() {
+        super();
+        
+        this._library = document.getElementById("quill");
+        this._add = document.getElementById("add");
+        this._settings = document.getElementById("settings");
+        this._about = document.getElementById("about");
+    }
+
+
+    /**
+     * Shows or hides the settings icon, depending on the parameter. 
+     * @param {boolean} isGm - True is the current player is the GM.
+     */
+    showSettings = (isGm) => {
+        try {
+            if (!isGm) {
+                this._settings.parentElement.style.visibility = "hidden";
+            }
+        } catch (error) {
+            logError("view.setGM", error);
+        }
+    }
+
+    /**
+     * Adds click handler for the Open library icon.
+     * @param {function} handler - The handler to execute when the icon is clicked.
+     */
+    bindLibraryClick = (handler) => this._library.addEventListener("click", () => handler());
+
+
+    /**
+     * Adds click handler for the Add notebook icon.
+     * @param {function} handler - The handler to execute when the icon is clicked.
+     */
+    bindAddClick = (handler) => this._add.addEventListener("click", () => handler());
+
+
+    /**
+     * Adds click handler for the Open Setup icon.
+     * @param {function} handler - The handler to execute when the icon is clicked.
+     */
+    bindSettingsClick = (handler) => this._settings.addEventListener("click", () => handler());
+
+
+    /**
+     * Adds click handler for the Show About icon.
+     * @param {function} handler - The handler to execute when the icon is clicked.
+     */
+    bindAboutClick = (handler) => this._about.addEventListener("click", () => handler());
+}
+
+
+/**
+ * Overlay Controller
+ * This class contains the logic for binding the model and view together. 
+ */
+class OverlayController extends AbstractBaseController {
+    /**
+     * 
+     * @param {OverlayModel} model 
+     */
+     _onControllerConnected(model) {
+        try {
+            this._view.bindLibraryClick(this._model.openLibrary);
+            this._view.bindAddClick(this._model.addBook);
+            this._view.bindSettingsClick(this._model.openSettings);
+            this._view.bindAboutClick(this._model.openAbout);
+
+            this._view.setGM(model.isGM);
+        } catch (error) {
+            logError("controller.ctor", e);
+        }
+    }
+}
+
+new OverlayController(new OverlayModel(), new OverlayView());
