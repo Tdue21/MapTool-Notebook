@@ -1,177 +1,268 @@
-"use strict";
+/**
+ * Library Model
+ * This class handles business logic for the library of notebooks. 
+ */
+class LibraryModel extends AbstractBaseModel {
+    _noteBooks = [];
+    _userPrefs = {};
+    _macro = `[r:json.set("{}", "isGM", isGM(), 
+                                "playerName", getPlayerName(), 
+                                "userPrefs", js.getUserPreferences(getPlayerName()), 
+                                "notebooks", getLibProperty("notebooks"))]`;
 
-try {
-    /***************************************************************************
-     * 
-     * @class
-     ***************************************************************************/
-    class Model {
-        noteBooks = [];
+    /**
+     * Handles instantiation logic for the model. 
+     */
+    constructor() {
+        super();
+        evaluateMacro(this._macro, (data) => this._performInitialization(JSON.parse(data)));
+    }
 
-        constructor() {
-            try {
-                let p = MapTool.getUserData();
 
-                p.then((e) => {
-                    try {
-                        let text = atob(e);
-                        let data = JSON.parse(text);
+    /**
+     * Initialization callback for model contructor.
+     * @param {JSON} data - Data object for model initialization.
+     */
+    _performInitialization(data) {
+        try {
+            this._playerName = data.playerName;
+            this._userPrefs = data.userPrefs;
 
-                        this.isGM = data.isGM;
-                        this.playerName = data.playerName;
-
-                        for (let item of data.notebooks) {
-                            if (!item.private || (item.private && (this.isGM || this.playerName == item.owner))) {
-                                this.noteBooks.push(item);
-                            }
-                        }
-
-                        this._connected(this);
-                    } catch (error) {
-                        logError("Error parsing data", error);
+            for (let item of data.notebooks) {
+                if (!item.private || (item.private && (data.isGM || this._playerName === item.owner))) {
+                    if (!item.accent) {
+                        item.accent = `transparent`;
                     }
-                },
-                    (e2) => {
-                        logError("Error reading data", e2);
-                        this._connectFailed(e1);
-                    });
-            } catch (error) {
-                logError("Model.ctor error", error);
+                    this._noteBooks.push(item);
+                }
             }
+            this._connected(this);
+        } catch (error) {
+            logError("Error parsing data", error);
         }
+    }
 
-        onConnect() {
-            try {
-                let p = new Promise((resolve, reject) => {
-                    this._connected = resolve;
-                    this._connectFailed = reject;
-                });
-                return p;
-
-            } catch (error) {
-                logError("onConnect error", error);
-            }
+    getUserPreference(name) {
+        try {
+            let value = this._userPrefs[name];
+            return value;
+        } catch (error) {
+            logError("getUserPreference", error);
         }
+    }
 
-        listTitles() {
-            let titles = [];
-            for(let item of this.noteBooks) {
-                let title = {
-                    "title": item.title,
-                    "summary": item.summary
-                };
-                titles.push(title);
-            }
-            
-            return titles;
-        };
+    setUserPreference(name, value) {
+        try {
+            this._userPrefs[name] = value;
+            let userPrefs = JSON.stringify(this._userPrefs);
+            const macro = `[h:userName='${encodeURIComponent(this._playerName)}']
+            [h:userPrefs='${encodeURIComponent(userPrefs)}']
+            [h:js.setUserPreferences(userName, userPrefs)]`;
+            evaluateMacro(macro);
 
-        getNoteBook = (title) => this.noteBooks.find(element => element.title === title);
+        } catch (error) {
+            logError("setUserPreference", error);
+        }
+    }
 
-        createBook = () => evaluateMacro("[h:js.createNotebook()]");
+    /**
+     * 
+     * @returns 
+     */
+    listTitles() {
+        let titles = [];
+        for (let item of this._noteBooks) {
+            let title = {
+                "title": item.title,
+                "summary": item.summary,
+                "private": item.private,
+                "owner": item.owner,
+                "accent": item.accent
+            };
+            titles.push(title);
+        }
+        return titles;
+    };
 
-        openBook(item) {
-            try {
+
+    /**
+     * 
+     * @param {*} title 
+     * @returns 
+     */
+    getNoteBook = (title) => this._noteBooks.find(element => element.title === title);
+
+
+    /**
+     * 
+     * @param {string} item 
+     * @param {number} asFrame
+     */
+    openBook(item, asFrame) {
+        try {
             let decoded = atob(item);
-            let json = JSON.parse(decoded);
-            let notebook = this.getNoteBook(json.title);
+            let notebook = this.getNoteBook(decoded);
             let data = btoa(JSON.stringify(notebook));
 
-            evaluateMacro(`[h:data='${data}'][h:js.showNotebook(data)]`);
-            } catch(error) {
-                logError("openBook error", error);
+            const macro = `[h:data='${data}'][h:asFrame=${asFrame}][h:js.showNotebook(data, asFrame)]`
+            evaluateMacro(macro);
+        } catch (error) {
+            logError("openBook error", error);
+        }
+    }
+}
+
+
+
+/**
+ * Library View
+ */
+class LibraryView extends AbstractBaseView {
+    
+    /**
+     * Constructor of the library view class.
+     */
+    constructor() {
+        super();
+
+        this._asFrameCheckBox = document.getElementById("frame");
+        this._booksList = document.getElementById("booksList");
+    }
+
+
+    /**
+     * Initializes the view from a list of book items and a click handler
+     * @param {JSON[]} items - List of json objects representing books.
+     * @param {Function} handler - Button click handler.
+     */
+    initialize(items, handler) {
+        try {
+            if (items == undefined) {
+                logError("Unable to build view.");
+                return;
             }
+
+            for (let item of items) {
+                this._createBookButton(item, handler);
+            }
+        } catch (error) {
+            logError("Initialize", error);
         }
     }
 
 
-    /***************************************************************************
+    /**
      * 
-     ***************************************************************************/
-    class View {
-        constructor() {
-            this._createButton = document.getElementById("newBook");
-            this._afterBooks = document.getElementById("afterBooks");
-            this._body = document.body;
+     * @param {boolean} doSet - True if the notebook should open in a frame, otherwise a dialog. 
+     */
+    setAsFrame(doSet) {
+        try {
+            this._asFrameCheckBox.checked = doSet;
+        } catch (error) {
+            logError("setAsFrame", error);
         }
+    }
 
-        initialize(items, handler) {
-            try {
+    /**
+     * Defines the onChange event listener on the asFrame cbeckbox.
+     * @param {Function} handler - onChange handler for the asFrame checkbox.
+     */
+    bindAsFrameChecked(handler) {
+        this._asFrameCheckBox.addEventListener('change', event => {
+            handler(event.target.checked);
+        });
+    }
 
-                if (items == undefined) {
-                    console.log("Unable to build view.");
-                    return;
-                }
-                items.forEach(item => this._createBookButton(item, handler));
-            } catch (error) {
-                logError("Initialize", error);
-            }
-        }
-
-        _createBookButton(item, handler) {
-            try {
-                let bookDiv = document.createElement("div");
-                bookDiv.className = "bookDiv";
-
-                let button = document.createElement("button");
-                button.id = btoa(JSON.stringify(item));
-                button.className = "button";
-                button.innerText = decodeURIComponent(item.title);
-                button.title = decodeURIComponent(item.summary);
-                button.addEventListener("click", event => {
-                    handler(event.target.id);
-                });
-
-                bookDiv.appendChild(button);
-                this._body.insertBefore(bookDiv, this._afterBooks);
-            } catch (error) {
-                logError("CreateBookButton", error);
-
-            }
-        }
-
-        bindCreateButton(handler) {
-            this._createButton.addEventListener("click", event => {
-                handler();
+    /**
+     * Creates a book button based on the supplied json object and onClick event handler.
+     * @param {JSON} item - A book object with necessary data.
+     * @param {Function} handler - onClick handler for the book button.
+     */
+    _createBookButton(item, handler) {
+        try {
+            // Create the button
+            let button = this.createElement("button", {
+                id: btoa(item.title),
+                className: "button",
+                title: decodeURIComponent(item.summary)
             });
-        }
-    }
+            button.addEventListener("click", event => {
+                handler(event.currentTarget.id, this._asFrameCheckBox.checked ? 1 : 0);
+            });
 
 
-    /***************************************************************************
-     * 
-     ***************************************************************************/
-    class Controller {
-        constructor(model, view) {
-            try {
-                this.model = model;
-                this.view = view;
+            // Create the text for button
+            let content = this.createElement("p", {
+                style: `--accent-bg:${item.accent}`,
+                className: "accent",
+                innerText: decodeURIComponent(item.title)
+            });
+            button.appendChild(content);
 
-                this.model.onConnect().then(
-                    (r) => {
-                        this.view.initialize(r.listTitles(), this.bookButtonHandler);
-                        this.view.bindCreateButton(this.createBookHandler);
-                    },
-                    (f) => console.log(f));
-            } catch (error) {
-                logError("Error", error);
+
+            // Lock image if book is private
+            if (item.private) {
+                let image = this.createElement("img", {
+                    src: "./images/key.png",
+                    title: `Owner: ${item.owner}`,
+                    width: "16px",
+                });
+                button.appendChild(image);
             }
+
+
+            // Create list item and add button.
+            let listItem = document.createElement("li");
+            listItem.appendChild(button);
+            this._booksList.appendChild(listItem);
+
+        } catch (error) {
+            logError("CreateBookButton", error);
         }
+    }
+}
 
-        /** Handler for the createBook() method of the model. */
-        createBookHandler = () => this.model.createBook();
 
-        /**
-         * Handle for the openBook method of the model.
-         * @param {*} title - Title of the book to open.
-         */
-        bookButtonHandler = (title) => this.model.openBook(title);
+/**
+ * 
+ */
+class LibraryController extends AbstractBaseController {
+    /**
+     * 
+     * @param {LibraryModel} model - The library model object
+     */
+    _onControllerConnected(model) {
+
+        let asFrame = model.getUserPreference("asFrame") == "true";
+        let titles = model.listTitles();
+
+        this._view.setAsFrame(asFrame);
+        this._view.initialize(titles, this._openBookHandler);
+        this._view.bindAsFrameChecked(this._openAsFrameHandler);
     }
 
-    /***************************************************************************
-     * Entry point
-     ***************************************************************************/
-    const app = new Controller(new Model(), new View());
+
+    /**
+     * openBook handler connecting view and model.
+     * @param {string} id - Id of the book being opened.
+     * @param {Boolean} asFrame - Whether the book should opened in a frame or dialog.
+     */
+    _openBookHandler = (id, asFrame) => { this._model.openBook(id, asFrame); }
+
+
+    /**
+     * Saves the user's 'asFrame' preference
+     * @param {boolean} isChecked - Value of the asFrame reference
+     */
+    _openAsFrameHandler = (isChecked) => { this._model.setUserPreference("asFrame", isChecked); }
+}
+
+
+/**
+ * 
+ */
+try {
+    new LibraryController(new LibraryModel(), new LibraryView());
 } catch (error) {
-    logError("Global error", error);
+    logError("Library initialization error", error);
 }

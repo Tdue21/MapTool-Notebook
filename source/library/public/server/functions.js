@@ -1,6 +1,14 @@
 "use strict";
 
 /**
+ * Checks if an object is json.
+ * @param {*} obj - any object.
+ * @returns true if the object is json, and false otherwise.
+ */
+function isJson(obj) { try { JSON.parse(obj); } catch { return false; } return true; }
+
+
+/**
  * Helper function for building option string for dialogs. 
  * @param {number} width - width of the window.
  * @param {number} height - height of the window.
@@ -82,7 +90,7 @@ function showLibrary() {
             notebooks: JSON.parse(MT.getLibProperty("notebooks", ns))
         };
         let text = MT.btoa(json);
-        let options = getDialogOptions(200, 500, text);
+        let options = getDialogOptions(260, 500, text);
 
         MT.showFrame("Notebook Library", `lib://${ns}/client/library.html`, options);
     } catch (error) {
@@ -95,15 +103,18 @@ MTScript.registerMacro("showLibrary", showLibrary);
 /**
  * 
  * @param {string} data - string representation of a notebook object. 
+ * @param {number} asFrame - 
  */
-function showNotebook(data) {
+function showNotebook(data, asFrame = 0) {
     try {
-        MT.printMessage(showNotebook.name, data);
-
         let book = JSON.parse(MT.atob(data));
         let options = getDialogOptions(600, 600, data);
 
-        MT.showDialog(`Notebook - ${book.title}`, `lib://${ns}/client/show.html`, options);
+        if (1 == Number(asFrame)) {
+            MT.showFrame(`Notebook - ${book.title}`, `lib://${ns}/client/show.html`, options);
+        } else {
+            MT.showDialog(`Notebook - ${book.title}`, `lib://${ns}/client/show.html`, options);
+        }
     } catch (error) {
         MT.printException("showNotebook", error);
     }
@@ -116,10 +127,15 @@ MTScript.registerMacro("showNotebook", showNotebook);
  */
 function showOverlay() {
     try {
-        MT.closeOverlay("Library");
+        const overlayName = "Library";
 
-        let gm = MTScript.execMacro("[r:isGM()]");
-        MT.showOverlay("Library", `lib://${ns}/client/overlay.html`, `zorder=90; value=${gm}`);
+        if (!MT.isOverlayRegistered(overlayName)) {
+            MT.showOverlay("Library", `lib://${ns}/client/overlay.html`, "zorder=90");
+        }
+
+        if (!MT.isOverlayVisible(overlayName)) {
+            MT.setOverlayVisible(overlayName, true);
+        }
     } catch (error) {
         MT.printException("showOverlay", error);
     }
@@ -178,6 +194,52 @@ MTScript.registerMacro("resetSettings", resetSettings);
 
 /**
  * 
+ * @param {string} userName - Name of the user.
+ * @returns {json} - A json object containing the user preferences. 
+ */
+function getUserPreferences(userName) {
+    try {
+        let userPref = {};
+        let raw = MT.getLibProperty("userPreferences", ns);
+
+        if (raw != "") {
+            let userPreferences = JSON.parse(raw);
+            userPref = userPreferences[userName];
+        }
+        return JSON.stringify(userPref);
+    } catch (error) {
+        MT.printException("getUserPreferences", error);
+    }
+}
+MTScript.registerMacro("getUserPreferences", getUserPreferences);
+
+/**
+ * 
+ * @param {string} userName - Name of the user.
+ * @param {string} userPreferences - A json object as string containing the user preferences.
+ */
+function setUserPreferences(userName, userPref) {
+    try {
+        let decodedUserName = decodeURIComponent(userName);
+        let decodedUserPref = decodeURIComponent(userPref);
+
+        let userPreferences = {};
+        let raw = MT.getLibProperty("userPreferences", ns);
+        if (raw != "") {
+            userPreferences = JSON.parse(raw);
+        }
+        let json = JSON.parse(decodedUserPref);
+        userPreferences[decodedUserName] = json;
+        MT.setLibProperty("userPreferences", userPreferences, ns);
+    } catch (error) {
+        MT.printException("setUserPreferences", error);
+    }
+}
+MTScript.registerMacro("setUserPreferences", setUserPreferences);
+
+
+/**
+ * 
  */
 function showWelcome() {
     try {
@@ -190,7 +252,7 @@ function showWelcome() {
             version: libData.version,
             doUpdate: gitLatest.localeCompare(libData.version) > 0
         });
-        MT.broadcast(final);
+        MT.printMessage(final);
     } catch (error) {
         MT.printException("showWelcome", error);
     }

@@ -6,14 +6,6 @@ const ns = "net.dovesoft.notebook";
  * Wrapper class containing shims for MapTool functions.
  */
 class MT {
-    /**
-     * 
-     * @param {string} message - Message to broadcast to chat.
-     */
-    static broadcast(message) {
-        MapTool.chat.broadcast(message);
-    }
-
     
     /**
      * Returns the name of the current player.
@@ -22,10 +14,22 @@ class MT {
     static getPlayerName() {
         return MTScript.evalMacro("[r:getPlayerName()]");
     }
+
+
+    /**
+     * Returns information about the library associated with the supplied namespace.
+     * @param {string} ns - Namespace of the library.
+     * @returns {json} Object with library info.
+     */
+     static getLibraryInfo(ns) {
+        MTScript.setVariable("ns", ns);
+        let value = MTScript.evalMacro("[r:library.getInfo(ns)]");
+        return JSON.parse(value);
+    }
     
 
     /**
-     * Invokes the MTScript getLibProperty. 
+     * Returns the value of a property from a library property. 
      * @param {string} name - Name of the property to get.
      * @param {string} ns - Name(space) of the library to use.
      * @returns {string} The value of the property.
@@ -38,7 +42,8 @@ class MT {
 
 
     /**
-     * Invokes the MTScript setLibProperty. 
+     * Sets the supplied library property of the associated namespace to 
+     * the supplied value.
      * @param {string} name - Name of the property to set.
      * @param {string} value - Value of property.
      * @param {string} ns - Name(space) of the library to use.
@@ -52,22 +57,10 @@ class MT {
 
 
     /**
-     * Invokes the MTScript library.getInfo.
-     * @param {string} ns - Namespace of the library.
-     * @returns {json} Object with library info.
-     */
-    static getLibraryInfo(ns) {
-        MTScript.setVariable("ns", ns);
-        let value = MTScript.evalMacro("[r:library.getInfo(ns)]");
-        return JSON.parse(value);
-    }
-
-
-    /**
-     * 
-     * @param {*} ns 
-     * @param {*} path 
-     * @returns {string}
+     * Reads the static data from the supplied path in the supplied namespace.
+     * @param {string} ns - Name of the library to use.
+     * @param {string} path - Path of the resource to get.
+     * @returns {string} - Content of the resource. If it's an image, an asset id is returned.
      */
     static getStaticData(ns, path) {
         MTScript.setVariable("ns", ns);
@@ -77,23 +70,18 @@ class MT {
 
 
     /**
-     * 
-     * @param {string} caller 
-     * @param {string} error 
+     * Formats and prints a message with an error and stack trace to the chat window.
+     * @param {string} message - The message to print.
+     * @param {Error} error - The error to print.
      */
-    static printException (caller, error) {
-        MapTool.chat.broadcast(`<div style="width:200px;overflow:auto"><pre>Exception in ${caller}: ${error}\r\n${error.stack}</pre></div>`);
-    }
+    static printException = (message, error) => MapTool.chat.broadcast(`<div style="border: 2px solid red; background: #ccc"><h4>${message}</h4><pre>${error}\n${error.stack}</pre></div>`);
 
 
     /**
-     * 
-     * @param {string} caller 
-     * @param {string} message 
+     * Formats and prints a message to the chat window.
+     * @param {string} message - The message to print.
      */
-    static printMessage(caller, message) {
-        MapTool.chat.broadcast(`<div style="width:200px;overflow:auto"><pre>Message from ${caller}: ${message}</pre></div>`);
-    }
+    static printMessage = (message) => MapTool.chat.broadcast(`<div style="border: 2px solid #444; background: #ccc">${message}</div>`);
 
 
     /**
@@ -119,9 +107,9 @@ class MT {
 
 
     /**
-     * 
-     * @param {string} data 
-     * @returns {string}
+     * Encodes the supplied text to base64.
+     * @param {string} data - The plain string text.
+     * @returns {string} The encoded base64 string.
      */
     static btoa(data) {
         MTScript.setVariable("jsData", data);
@@ -130,9 +118,9 @@ class MT {
 
 
     /**
-     * 
-     * @param {string} data 
-     * @returns {string}
+     * Decodes a base64 encode string to plain text.
+     * @param {string} data - The encoded string.
+     * @returns {string} The decoded text.
      */
     static atob(data) {
         MTScript.setVariable("jsData", data);
@@ -192,9 +180,9 @@ class MT {
 
     /**
      * 
-     * @param {*} name 
-     * @param {*} uri 
-     * @param {*} options 
+     * @param {string} name 
+     * @param {string} uri 
+     * @param {string} options 
      */
     static showOverlay(name, uri, options){
         MTScript.setVariable("name", name);
@@ -207,10 +195,44 @@ class MT {
 
     /**
      * 
-     * @param {*} name 
+     * @param {string} name 
      */
     static closeOverlay(name) {
         MTScript.setVariable("name", name);
         MTScript.evalMacro("[h:closeOverlay(name)]");
+    }
+
+
+    /**
+     * 
+     * @param {string} name 
+     * @returns  {boolean}
+     */
+    static isOverlayRegistered(name) {
+        MTScript.setVariable("name", name);
+        return MTScript.evalMacro("[r:isOverlayRegistered(name)]") === 1;
+    }
+
+
+    /**
+     * 
+     * @param {string} name 
+     * @returns  {boolean}
+     */
+     static isOverlayVisible(name) {
+        MTScript.setVariable("name", name);
+        return MTScript.evalMacro("[r:isOverlayVisible(name)]") === 1;
+    }
+
+
+    /**
+     * 
+     * @param {string} name 
+     * @param {boolean} visible
+     */
+     static setOverlayVisible(name, visible) {
+        MTScript.setVariable("name", name);
+        MTScript.setVariable("visible", visible ? 1 : 0);
+        MTScript.evalMacro("[r:setOverlayVisible(name, visible)]");
     }
 }

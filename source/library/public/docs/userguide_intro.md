@@ -8,3 +8,15 @@ opportunity to learn. This library is built from scratch, but has been heavily i
 
 This user guide presents the possibilities of this library, and offers guidance on how to use them. 
    
+This is a function call: [r:getPlayerName()].   
+This is another: [r:isGM()].   
+
+And here is a table:   
+|Header 1     | Header 2      | Header 3 |
+| :--- | :---: | ---: |
+|Row 1| Value | Value |
+|Row 2| Value | Value |
+|Row 3| **Value** | Value |
+
+Here we have a [greatsword](roll "1d10+4") damage dice roll.   
+Roll a [1d6](roll "1d6").

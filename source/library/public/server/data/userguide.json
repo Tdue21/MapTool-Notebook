@@ -4,6 +4,8 @@
         "summary": "User guide for MapTool notebook add-on.",
         "owner": "net.dovesoft.notebook",
         "private": false,
+        "accent": "#61003E",
+        "read-only":true,
         "pages": [
             {
                 "name": "0. Introduction",
@@ -12,6 +14,10 @@
             {
                 "name": "1. Basic Use",
                 "uri": "/public/docs/userguide_basics.md"
+            },
+            {
+                "name": "2. Syntax",
+                "uri": "/public/docs/userguide_syntax.md"
             }
         ]
     },
