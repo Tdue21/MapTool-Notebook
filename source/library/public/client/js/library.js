@@ -201,7 +201,7 @@ class LibraryView extends AbstractBaseView {
 
 
             // Lock image if book is private
-            if (item.private) {
+            if (item.private == "true") {
                 let image = this.createElement("img", {
                     src: "./images/key.png",
                     title: `Owner: ${item.owner}`,

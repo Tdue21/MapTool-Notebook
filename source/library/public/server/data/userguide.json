@@ -1,11 +1,11 @@
 [
     {
         "title": "User Guide",
-        "summary": "User guide for MapTool notebook add-on.",
+        "summary": "THis is the summary of the most awesome user guide in the multiverse. Actually, it is so awesome that even AO is in awe of it",
         "owner": "net.dovesoft.notebook",
         "private": false,
         "accent": "#61003E",
-        "read-only":true,
+        "readonly": true,
         "pages": [
             {
                 "name": "0. Introduction",
@@ -18,38 +18,10 @@
             {
                 "name": "2. Syntax",
                 "uri": "/public/docs/userguide_syntax.md"
-            }
-        ]
-    },
-    {
-        "title": "Gertrud%27s notebook",
-        "summary": "This is a private notebook, owned by Gertrud.",
-        "owner": "Gertrud",
-        "private": true,
-        "pages": [
-            {
-                "name": "page 1",
-                "content": "content of page 1"
             },
             {
-                "name": "page 2",
-                "content": "content of page 2"
-            }
-        ]
-    },
-    {
-        "title": "notebook 2",
-        "summary": "This is the second notebook.",
-        "owner": "",
-        "private": false,
-        "pages": [
-            {
-                "name": "page 1",
-                "content": "content of page 1"
-            },
-            {
-                "name": "page 2",
-                "content": "content of page 2"
+                "name": "3. Changelog",
+                "uri": "/public/docs/userguide_changelog.md"
             }
         ]
     }

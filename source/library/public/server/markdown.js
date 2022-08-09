@@ -7,7 +7,6 @@ function parseMarkDown(description) {
 	try {
 		let data = MT.atob(description);
 		data = replaceFunctionCalls(data);
-		//data = replaceDiceRolls(data);
 
 		const renderer = {
 			image(href, title, text) {
@@ -15,8 +14,9 @@ function parseMarkDown(description) {
 					if (href === null) {
 						return text;
 					}
-					MapTool.chat.broadcast("expandedImage 1: " + href);
+					
 					let size = 0;
+
 					if (href.includes("=")) {
 						let parts = href.split("=");
 						href = parts[0];
@@ -61,17 +61,6 @@ function replaceFunctionCalls(description) {
 		if (p1 == 'r') {
 			return result;
 		}
-	});
-
-	return result;
-}
-
-function replaceDiceRolls(description) {
-	const regex = /(?<!!)\[([\s\w\d'\-/\(\)\.,+;]*?)\]\([Rr][Oo][Ll]{2}\s(.*?)\)/gi;
-	const result = description.replace(regex, (m, p1, p2, o, s) => {
-		let data = { "text": p1, "value": p2, "tokenName": "" };
-		const link = `[${p1}](macro://DiceRoller@lib:${ns}/impersonated/?${JSON.stringify(data)})`;
-		return link;
 	});
 	return result;
 }

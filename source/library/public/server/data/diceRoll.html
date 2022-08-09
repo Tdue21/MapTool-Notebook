@@ -1,0 +1,39 @@
+<table style="margin: 0px; padding: 0px; width:200px; border:1px solid ${options.isCrit ? '#cca300' : 'black'}">
+	<tr>
+    	<td style="margin: 0px; padding: 0px; text-align: left; color: white; background-color: ${options.isCrit ? '#cca300' : 'black'};">
+            ${options.text}
+        </td>
+    </tr>
+	<tr>
+	    <td style="margin: 0px; padding: 0px; text-align: left;">
+            <table style="margin: 0px; padding: 0px">
+	            <tr>
+                    ${options.diceResult}
+
+                    <!-- 
+                        foreach(die) {
+                            add cell with correct die image as background
+                            write result of die in cell
+                            new row after 5 dice
+                        }
+
+                    <td style="padding-top: 5px; margin: 0px; padding: 0px" align=center valign=middle width=35>
+        	    	    <table>
+		            	    <tr>
+                                <td width=32 height=32 align=center valign=middle background=[r:img] style="background-repeat: no-repeat;background-position: center; padding-left:4px; padding-bottom:5px;">
+			                        <font color=[r:if(dice==group3,"3cff00",if(dice==1,"ff5b5b","white"))] size=4><b>
+        		        </table>
+                    <td>
+                        <table>
+                            <tr>
+                                <td width=32 height=32 align=center valign=middle background="+img+" style='background-repeat: no-repeat;background-position: center; padding-left:4px; padding-bottom:5px;'>
+                                    <font color="+if(dice==group3,"3cff00",if(dice==1,"ff5b5b","white"))+" size=4>
+                                        <b>"+substring(dice,length(dice)-1,length(dice))+"
+                                
+                    </table>
+                    -->
+                </tr>
+            </table>
+        </td>
+    </tr>
+</table>

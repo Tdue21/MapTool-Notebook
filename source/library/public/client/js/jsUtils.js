@@ -5,6 +5,8 @@ const namespace = "net.dovesoft.notebook";
  * This is the abstract base for page models.
  */
 class AbstractBaseModel {
+    _connected;
+    _connectFailed;
 
     /**
      * Must be called immediately after creating the model object. It will 

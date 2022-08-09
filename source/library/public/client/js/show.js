@@ -1,254 +1,215 @@
-"use strict";
-try {
+/**
+ * Show Book model
+ * This class is responsible for the current notebook
+ * data.
+ * @class
+ */
+class ShowBookModel extends AbstractBaseModel {
     /**
-     * ShowBook model. This class is responsible for the current notebook
-     * data.
-     * @class
+     * Intializes the ShowBookModel object.
      */
-    class Model {
-        constructor() {
-            let p = MapTool.getUserData();
-            p.then(
-                (d) => {
-                    this._parseData(d);
-                    this._connected(this);
-                }, (e1) => {
-                    console.log("Error getting library data: " + e1);
-                    this._connectFailed(e1);
-                });
-        }
+    constructor() {
+        super();
 
-        onConnect() {
-            let p = new Promise((resolve, reject) => {
-                this._connected = resolve;
-                this._connectFailed = reject;
-            });
-            return p;
-        }
-
-        getPageContent(name) {
-            let page = this.pages.find(page => page.name === name);
-            if (page) {
-                return page.content;
-            } else {
-                return "Undefined :(";
-            }
-        }
-
-        _parseData(d) {
-            try {
-
-                let decoded = atob(d);
-                let data = JSON.parse(decoded);
-                this.title = data.title;
-                this.summary = data.summary;
-                this.owner = data.owner;
-                this.private = data.private;
-                if (data.accent) {
-                    this.accent = data.accent;
-                }
-                this.pages = data.pages;
-                for (let page of this.pages) {
-                    if (page.uri) {
-                        evaluateMacro(`[h:uri="${page.uri}"][h:ns="${namespace}"][r:data.getStaticData(ns, uri)]`, data => {
-                            page.content = data;
-                            page.readOnly = true;
-                        });
-                    } else {
-                        page.readOnly = false;
-                    }
-                }
-            } catch (error) {
-                console.log("Error parsing book: " + error);
-            }
-        }
+        MapTool.getUserData().then(
+            (d) => this._parseData(d),
+            (e) => this._connectFailed(e));
     }
 
-    /*************************************************************************
-     * About view. Responsible for displaying the library data on the about page.
-     * @class
-     *************************************************************************/
-    class View {
 
-        _accent;
-        _pages = [];
+    /**
+     * Parse the notebook data and presents it for the controller. 
+     * @param {string} rawData - raw data for the notebook. 
+     */
+    _parseData(rawData) {
+        try {
+            let decoded = atob(rawData);
+            let data = JSON.parse(decoded);
 
-        constructor() {
-            try {
-                this._root = document.documentElement;
-                this._title = document.getElementById("bookTitle");
-                this._summary = document.getElementById("summaryText");
-                this._summaryTooltip = document.getElementById("summaryTooltip");
-                this._image = document.getElementById("lock");
-                this._indexPanel = document.getElementById("indexPanel");
-                this._pagePanel = document.getElementById("pagePanel");
-                this._pageIndex = document.getElementById("pageIndex");
-            } catch (error) {
-                logMessage("view ctor", error);
-            }
-        }
+            this.title = data.title;
+            this.summary = data.summary;
+            this.owner = data.owner;
+            this.private = data.private;
+            this.accent = data.accent;
+            this.pages = data.pages;
 
-        get title() { return this._title.innerText; }
-        set title(value) { this._title.innerText = value; }
+            for (let page of this.pages) {
+                if (page.uri) {
+                    const macro = `[h:uri="${page.uri}"]
+                    [h:ns="${namespace}"]
+                    [r:data.getStaticData(ns, uri)]`;
 
-        get summary() { return this._summary.innerText; }
-        set summary(value) {
-            this._summary.innerText = value;
-            this._summaryTooltip.innerText = value;
-        }
-
-        get accent() { return this._accent; }
-        set accent(value) {
-            try {
-                this._accent = value;
-                if (value) {
-                    let tc = tinycolor(value);
-
-                    let bg = tc.toHexString();
-                    let fg = tc.isLight() ? 'black' : 'white';
-
-                    let hbg = tc.darken(10).toHexString();
-                    let hfg = tinycolor(hbg).isLight() ? 'black' : 'white';
-
-                    let abg = tc.darken(20).toHexString();
-                    let afg = tinycolor(abg).isLight() ? 'black' : 'white';
-
-                    this._root.style.setProperty('--accent-bg', bg);
-                    this._root.style.setProperty('--accent-hover-bg', hbg);
-                    this._root.style.setProperty('--accent-active-bg', abg);
-
-                    this._root.style.setProperty('--accent-fg', fg);
-                    this._root.style.setProperty('--accent-hover-fg', hfg);
-                    this._root.style.setProperty('--accent-active-fg', afg);
+                    evaluateMacro(macro, data => {
+                        page.content = data;
+                        page.readOnly = true;
+                    });
+                } else {
+                    page.readOnly = false;
                 }
-            } catch (error) {
-                logMessage("set accent", error);
             }
+        } catch (error) {
+            logError("Error parsing book", error);
         }
-
-        /**
-         * 
-         * @param {any[]} pages 
-         */
-        setPages(pages, clickHandler) {
-            for (let page of pages) {
-                let link = document.createElement("span");
-                link.innerText = page.name;
-                link.id = btoa(page.name);
-                link.addEventListener("click", event => {
-                    clickHandler(event.target.id);
-                });
-
-                let div = document.createElement("div");
-                div.className = "entry";
-                div.appendChild(link);
-
-                let item = document.createElement("li");
-                item.appendChild(div);
-
-                this._pageIndex.appendChild(item);
-            }
-        }
-
-        showPage(content) {
-            this._pagePanel.innerHTML = marked.parse(content);
-        }
+        this._connected(this);
     }
 
-    /*************************************************************************
-     * About controller. Responsible for tying everything together. 
-     * @class
-     *************************************************************************/
-    class Controller {
-        constructor(model, view) {
-            this.model = model;
-            this.view = view;
-
-            this.model.onConnect().then(
-                (m) => {
-                    this.view.title = m.title;
-                    this.view.summary = m.summary;
-                    this.view.accent = m.accent;
-                    this.view.setPages(m.pages, this.indexClickedHandler);
-                },
-                (e) => { console.log("onConnect error: " + e + "\r\n" + e.stack); }
-            );
-        }
-
-        indexClickedHandler = (data) => {
-            try {
-                let name = atob(data);
-                let content = this.model.getPageContent(name);
-                this.view.showPage(content);
-
-            } catch (error) {
-                logError("Error onClick", error);
-            }
+    /**
+     * 
+     * @param {*} name 
+     * @returns 
+     */
+    getPageContent(name) {
+        let page = this.pages.find(page => page.name === name);
+        if (page) {
+            return page.content;
+        } else {
+            return "Undefined :(";
         }
     }
-
-    /*************************************************************************
-     * Entry point. 
-     *************************************************************************/
-    const app = new Controller(new Model(), new View());
-
-
-} catch (error) {
-    console.log("Error: " + error + "\r\n" + error.stack);
 }
 
 
-/*
+/**
+ * 
+ */
+class ShowBookView extends AbstractBaseView {
+    _pages = [];
+    _root;
+    _bookTitle;
+    _summaryEntry;
+    _indexPanel;
+    _pageIndex;
+    _pagePanel;
+    _accent;
+    _summary;
+    _ownerSpan;
 
-        (async () => {
-            const isgm = (await isGM()) == 1;
-            const playerName = await getPlayerName();
-            const image = document.getElementById("lock");
-            const pageIndex = document.getElementById("pageIndex");
+    constructor() {
+        super();
 
-            let locked = false;
+        try {
+            this._root = document.documentElement;
 
-            let data = {
-                "title": "User Guide",
-                "summary": "User guide for MapTool notebook add-on.",
-                "owner": "Gert",
-                "private": false,
-                "pages": {
-                    "0. Introduction": "content of page 1",
-                    "1. First section": "content of page 2",
-                    "2. second section": "content of page 3",
-                    "3. third section": "content of page 4"
-                }
-            };
+            this._bookTitle = document.getElementById("bookTitle");
+            this._summaryEntry = document.getElementById("summaryEntry");
+            this._ownerSpan = document.getElementById("footerOwner");
+            this._indexPanel = document.getElementById("indexPanel");
+            this._pageIndex = document.getElementById("pageIndex");
+            this._pagePanel = document.getElementById("pagePanel");
 
-            function setLocked(isLocked) {
-                image.src = (isLocked)
-                    ? "../images/locked.png"
-                    : "../images/unlocked.png";
-            }
+            this._goFirst = document.getElementById("go-first");
+            this._goPrev = document.getElementById("go-prev");
+            this._goNext = document.getElementById("go-next");
+            this._goLast = document.getElementById("go-last");
+        } catch (error) {
+            logMessage("view ctor", error);
+        }
+    }
 
-            function toggleLocked() {
-                if (isgm || data.owner == playerName) {
-                    setLocked(locked);
-                    locked = !locked;
-                }
-            }
-            image.addEventListener("click", toggleLocked);
+    /**
+     * 
+     * @param {string} title 
+     * @param {string} summary 
+     * @param {string} owner 
+     * @param {string} accent 
+     * @param {JSON} pages 
+     * @param {Function} clickHandler 
+     */
+    initialize(title, summary, owner, accent, pages, clickHandler) {
+        try {
+            this._bookTitle.innerText = title;
+            this._ownerSpan.innerText = owner;
+            this._summary = summary;
+            this._accent = accent != "" ? accent : "#a8a5ca";
 
-            locked = data.private;
-            setLocked(locked);
+            let tc = tinycolor(this._accent);
 
-            dataBind("title", "innerText", data);
-            dataBind("summary", "innerText", data);
+            let bg = tc.toHexString();
+            let fg = tc.isLight() ? 'black' : 'white';
+            let hbg = tc.darken(10).toHexString();
+            let hfg = tinycolor(hbg).isLight() ? 'black' : 'white';
+            let abg = tc.darken(20).toHexString();
+            let afg = tinycolor(abg).isLight() ? 'black' : 'white';
 
-            let indexContent = "";
-            let keys = Object.keys(data.pages);            
-            for(let key of keys) {
-                indexContent += `<li>
-                    <a href="lib://net.dovesoft.notebook/showPage?title=${encodeURI(key)}&content=${encodeURI(data.pages[key])}">${key}</a>
-                </li>`;
-            }
-            pageIndex.innerHTML = indexContent;
-        })();
+            this._root.style.setProperty('--accent-bg', bg);
+            this._root.style.setProperty('--accent-hover-bg', hbg);
+            this._root.style.setProperty('--accent-active-bg', abg);
 
-*/
+            this._root.style.setProperty('--accent-fg', fg);
+            this._root.style.setProperty('--accent-hover-fg', hfg);
+            this._root.style.setProperty('--accent-active-fg', afg);
+
+            pages.forEach(page => this._createPageLink(page.name, clickHandler));
+
+            this._summaryEntry
+                .addEventListener("click",
+                    () => this._pagePanel.innerHTML = this._summary);
+
+        } catch (error) {
+            logError("set accent", error);
+        }
+    }
+
+    _createPageLink(pageName, clickHandler) {
+        try {
+            let link = this.createElement("span", {
+                id: btoa(pageName),
+                innerText: pageName
+            });
+            link.addEventListener("click", event => clickHandler(event.target.id));
+
+            let div = this.createElement("div", { className: "entry" });
+            div.appendChild(link);
+
+            let item = document.createElement("li");
+            item.appendChild(div);
+
+            this._pageIndex.appendChild(item);
+
+        } catch (error) {
+            logError("createPageLink", error);
+        }
+    }
+
+    showPage(content) {
+        evaluateMacro(`[h:data="${btoa(content)}"][r:js.parseMarkDown(data)]`, (d) => {
+            this._pagePanel.innerHTML = d;
+        });
+    }
+}
+
+
+/**
+ * 
+ */
+class ShowBookController extends AbstractBaseController {
+
+    /**
+     * 
+     * @param {ShowBookModel} model - The connected model.
+     */
+    _onControllerConnected(model) {
+
+        this._view.initialize(model.title,
+            model.summary,
+            model.owner,
+            model.accent,
+            model.pages,
+            this._pageClickHandler);
+    }
+
+    _pageClickHandler = (data) => {
+        try {
+            let name = atob(data);
+            let content = this._model.getPageContent(name);
+            this._view.showPage(content);
+        } catch (error) {
+            logError("Error onClick", error);
+        }
+    }
+}
+
+/**
+ * 
+ */
+const app = new ShowBookController(new ShowBookModel(), new ShowBookView());
