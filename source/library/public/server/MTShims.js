@@ -1,5 +1,3 @@
-"use strict";
-
 const ns = "net.dovesoft.notebook";
 
 /**
@@ -74,7 +72,9 @@ class MT {
      * @param {string} message - The message to print.
      * @param {Error} error - The error to print.
      */
-    static printException = (message, error) => MapTool.chat.broadcast(`<div style="border: 2px solid red; background: #ccc"><h4>${message}</h4><pre>${error}\n${error.stack}</pre></div>`);
+    static printException = (message, error) => {
+        MapTool.chat.broadcast(`${message}<br><pre>${error}\n${error.stack}</pre>`);
+    };
 
 
     /**
@@ -129,23 +129,23 @@ class MT {
 
 
     /**
-     * 
-     * @param {*} title 
-     * @param {*} uri 
-     * @param {*} options 
+     * Opens a dialog with the supplied dialogName, uri and options string. 
+     * @param {string} dialogName - Name of the dialog. Unique for the window. 
+     * @param {string} uri - Uri of the html page that should be displayed in the dialog.
+     * @param {string} options - Dialog options, like height, width etc. 
      */
-    static showDialog(title, uri, options) {
-        MTScript.setVariable("title", title);
+    static showDialog(dialogName, uri, options) {
+        MTScript.setVariable("dialogName", dialogName);
         MTScript.setVariable("uri", uri);
         MTScript.setVariable("options", options);
 
-        MTScript.evalMacro("[h:html.dialog5(title, uri, options)]");
+        MTScript.evalMacro("[h:html.dialog5(dialogName, uri, options)]");
     }
 
 
     /**
-     * 
-     * @param {*} dialogName 
+     * Closes the dialog with the supplied name if it exists.
+     * @param {*} dialogName - Name of the dialog.
      */
     static closeDialog(dialogName) {
         MTScript.setVariable("dialogName", dialogName);
@@ -154,23 +154,23 @@ class MT {
 
 
     /**
-     * 
-     * @param {*} title 
-     * @param {*} uri 
-     * @param {*} options 
+     * Opens a frame with the supplied name, uri and options string. 
+     * @param {string} frameName - Name of the frame. 
+     * @param {string} uri - Uri of the html page that should be displayed in the frame.
+     * @param {string} options - Frame options, like height, width etc. 
      */
-     static showFrame(title, uri, options) {
-        MTScript.setVariable("title", title);
+     static showFrame(frameName, uri, options) {
+        MTScript.setVariable("frameName", frameName);
         MTScript.setVariable("uri", uri);
         MTScript.setVariable("options", options);
 
-        MTScript.evalMacro("[h:html.frame5(title, uri, options)]");
+        MTScript.evalMacro("[h:html.frame5(frameName, uri, options)]");
     }
 
 
     /**
-     * 
-     * @param {*} frameName 
+     * Closes the frame with the supplied name if it exists.
+     * @param {string} frameName - Name of the frame.
      */
     static closeFrame(frameName) {
         MTScript.setVariable("dialogName", frameName);
@@ -179,10 +179,10 @@ class MT {
 
 
     /**
-     * 
-     * @param {string} name 
-     * @param {string} uri 
-     * @param {string} options 
+     * Opens an overlay with the supplied name, uri and options string. 
+     * @param {string} nme - Name of the overlay. 
+     * @param {string} uri - Uri of the html page that should be displayed in the overlay.
+     * @param {string} options - Overlay options. 
      */
     static showOverlay(name, uri, options){
         MTScript.setVariable("name", name);
@@ -194,8 +194,8 @@ class MT {
 
 
     /**
-     * 
-     * @param {string} name 
+     * Closes the overlay with the supplied name if it exists.
+     * @param {string} name - Name of the overlay.
      */
     static closeOverlay(name) {
         MTScript.setVariable("name", name);
@@ -204,9 +204,9 @@ class MT {
 
 
     /**
-     * 
-     * @param {string} name 
-     * @returns  {boolean}
+     * Checks if an overlay with the supplied name is registered. Returns true if there is.
+     * @param {string} name - Name of the overlay.
+     * @returns  {boolean} - True if an overlay of the supplied name exists.
      */
     static isOverlayRegistered(name) {
         MTScript.setVariable("name", name);
@@ -215,9 +215,9 @@ class MT {
 
 
     /**
-     * 
-     * @param {string} name 
-     * @returns  {boolean}
+     * Checks if an overlay with the supplied name is visible. Returns true if there is.
+     * @param {string} name - Name of the overlay.
+     * @returns  {boolean} - True if an overlay of the supplied name is visible.
      */
      static isOverlayVisible(name) {
         MTScript.setVariable("name", name);
@@ -226,13 +226,13 @@ class MT {
 
 
     /**
-     * 
-     * @param {string} name 
-     * @param {boolean} visible
+     * Sets the visibility of an overlay with the supplied name.
+     * @param {string} name - Name of the overlay.
+     * @param {boolean} isVisible - The state of the overlay-
      */
-     static setOverlayVisible(name, visible) {
+     static setOverlayVisible(name, isVisible) {
         MTScript.setVariable("name", name);
-        MTScript.setVariable("visible", visible ? 1 : 0);
-        MTScript.evalMacro("[r:setOverlayVisible(name, visible)]");
+        MTScript.setVariable("isVisible", isVisible ? 1 : 0);
+        MTScript.evalMacro("[r:setOverlayVisible(name, isVisible)]");
     }
 }

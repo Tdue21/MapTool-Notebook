@@ -12,7 +12,7 @@ try {
             let p = MapTool.getUserData();
             p.then(
                 (data) => {
-                    this.version = atob(data);
+                    this.version = data;
                     this._connected(this);
                 },
                 (e2) => {
