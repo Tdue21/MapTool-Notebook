@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <link rel="stylesheet" type="text/css" href="./css/common.css?cachelib=false">
+    <link rel="stylesheet" type="text/css" href="./css/edit.css?cachelib=false">
+
+    <script defer src="./js/toolcool-color-picker.min.js?cachelib=false"></script>
+    <script defer src="./js/mvc.js?cachelib=false"></script>
+    <script defer src="./js/jsUtils.js?cachelib=false"></script>
+    <script defer src="./js/edit.js?cachelib=false"></script>
+    
+    
+    <style type="text/css">
+    </style>
+</head>
+
+<body>
+    <table>
+        <caption id="caption">Create notebook</caption>
+        <tr>
+            <td><label for="bookTitle">Title</label></td>
+            <td><input type="text" id="bookTitle" placeholder="Title of notebook"></td>
+        </tr>
+        <tr>
+            <td><label for="bookSummary">Summary</label></td>
+            <td><input type="text" id="bookSummary" placeholder="Short summary of notebook"></td>
+        </tr>
+        <tr>
+            <td><label for="private">Private</label></td>
+            <td><input type="checkbox" id="private"></td>
+        </tr>
+        <tr>
+            <td><label for="colorPicker">Accent</label></td>
+            <td><toolcool-color-picker id="colorPicker" color="#8AA6ED"></toolcool-color-picker></td>
+        </tr>
+    </table>
+    <table id="pageList">
+        <caption>Pages</caption>
+        <tr><td colspan="3"><button>New page</button></td></tr>
+    </table>
+</body>
+
+</html>

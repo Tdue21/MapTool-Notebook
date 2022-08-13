@@ -1,68 +1,29 @@
 const namespace = "net.dovesoft.notebook";
 
 
+
 /**
- * This is the abstract base for page models.
+ * Encodes JSON for transport between layers.
+ * @param {JSON} data - Data to encode.
  */
-class AbstractBaseModel {
-    _connected;
-    _connectFailed;
-
-    /**
-     * Must be called immediately after creating the model object. It will 
-     * resolve the asynchronous data look up needed for the overlay logic.
-     * @returns {Promise} - A Promise object that will be resolved when 
-     * the model is finished loading data.
-     */
-    onConnect() {
-        try {
-            return new Promise((resolve, reject) => {
-                this._connected = resolve;
-                this._connectFailed = reject;
-            });
-        } catch (error) {
-            logError("onConnect error", error);
-        }
-    }
+ function transEncode(data) {
+    const text = JSON.stringify(data);
+    const encoded = btoa(text);
+    return encoded;
 }
 
-class AbstractBaseView {
 
-    /**
-     * 
-     * @param {string} type - HTMLElement type to create
-     * @param {json} options - Object containing all properties to set.
-     * @returns {HTMLElement}
-     */
-    createElement(type, options) {
-        let element = document.createElement(type);
-        let keys = Object.keys(options);
-        for (let prop of keys) {
-            element[prop] = options[prop];
-        }
-        return element;
-    }
+/**
+ * Decode transport encoded data to json.
+ * @param {string} data - Transport encoded data string.
+ * @returns {JSON} The decoded json object.
+ */
+function transDecode(data) {
+    const decoded = atob(data);
+    const json = JSON.parse(decoded);
+    return json;
 }
 
-class AbstractBaseController {
-
-    constructor(model, view) {
-        try {
-            this._model = model;
-            this._view = view;
-
-            this._model.onConnect().then(
-                (model) => this._onControllerConnected(model),
-                (error) => logError("controller.onConnected", error));
-        } catch (error) {
-            logError("baseCtrl.ctor", error);
-        }
-    }
-
-    _onControllerConnected(model) {
-        throw new Error("Implement _onControllerConnected()");
-    }
-}
 
 /**
  * 
@@ -71,11 +32,10 @@ class AbstractBaseController {
  */
 function logError(message, error = undefined) {
     let output = `<h4>${message}</h4>`;
-    
     if(error != undefined) {
         output += `<pre>${error}\n${error.stack}</pre>`;
     }
-    console.log(output);
+    MapTool.log(output);
 }
 
 /**
@@ -83,7 +43,23 @@ function logError(message, error = undefined) {
  * @param {string} message 
  * @returns 
  */
-const logMessage = (message) => console.log(message);
+const logMessage = (message) => MapTool.log(message); 
+
+
+/**
+ * 
+ * @param {string} playerName 
+ * @param {string} userPreference 
+ * @param {string} value 
+ */
+const setUserPreference = (playerName, userPreference, value) => {
+    const userPrefs = JSON.parse(`{"${userPreference}":"${value}"}`);
+    const macro = `[h:playerName="${transEncode(playerName)}"]
+                   [h:userPref="${transEncode(userPrefs)}"]
+                   [h:js.setUserPreferences(playerName, userPref)]`;
+    evaluateMacro(macro);
+}
+
 
 /**
  * 

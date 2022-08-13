@@ -1,6 +1,30 @@
 "use strict";
 
 /**
+ * Encodes JSON for transport between layers.
+ * @param {JSON} data - Data to encode.
+ */
+function transEncode(data) {
+    const text = JSON.stringify(data);
+    const encoded = MT.btoa(text);
+    return encoded;
+}
+MTScript.registerMacro("transEncode", transEncode);
+
+
+/**
+ * Decode transport encoded data to json.
+ * @param {string} data - Transport encoded data string.
+ * @returns {JSON} The decoded json object.
+ */
+function transDecode(data) {
+    const decoded = MT.atob(data);
+    const json = JSON.parse(decoded);
+    return json;
+}
+MTScript.registerMacro("transDecode", transDecode);
+
+/**
  * Function for showing the Notebook About dialog.
  */
 function showAbout() {
@@ -46,7 +70,7 @@ MTScript.registerMacro("showSetup", showSetup);
 
 function closeSetup() {
     try {
-        
+
     } catch (error) {
         MT.printException("closeSetup", error);
     }
@@ -57,14 +81,17 @@ function closeSetup() {
  */
 function showLibrary() {
     try {
-        let json = {
-            isGM: Number(MTScript.evalMacro("[r:isGM()]")),
-            playerName: MTScript.evalMacro("[r:getPlayerName()]"),
-            notebooks: JSON.parse(MT.getLibProperty("notebooks", ns))
+        const _playerName = MT.getPlayerName();
+        const _notebooks = JSON.parse(MT.getLibProperty("notebooks", ns));
+        const _userPrefs = getUserPreferences(_playerName);
+        const data = {
+            "isGM": MT.isGM(),
+            "playerName": _playerName,
+            "asFrame": _userPrefs.asFrame,
+            "notebooks": _notebooks
         };
-        let text = MT.btoa(json);
-        let options = getDialogOptions(260, 500, text);
 
+        let options = getDialogOptions(260, 500, transEncode(data));
         MT.showFrame("Notebook Library", `lib://${ns}/client/library.html`, options);
     } catch (error) {
         MT.printException("showLibrary", error);
@@ -81,7 +108,7 @@ MTScript.registerMacro("showLibrary", showLibrary);
 function showNotebook(data, asFrame = 0) {
     try {
         let book = JSON.parse(MT.atob(data));
-        let options = getDialogOptions(600, 600, data);
+        let options = getDialogOptions(800, 600, data);
 
         if (1 == Number(asFrame)) {
             MT.showFrame(`Notebook - ${book.title}`, `lib://${ns}/client/show.html`, options);
@@ -101,9 +128,13 @@ MTScript.registerMacro("showNotebook", showNotebook);
 function showOverlay() {
     try {
         const overlayName = "Library";
+        const data = {
+            gm: MT.isGM(),
+            player: MT.getPlayerName()
+        }
 
         if (!MT.isOverlayRegistered(overlayName)) {
-            MT.showOverlay("Library", `lib://${ns}/client/overlay.html`, "zorder=90");
+            MT.showOverlay("Library", `lib://${ns}/client/overlay.html`, "zorder=90;value=" + transEncode(data));
         }
 
         if (!MT.isOverlayVisible(overlayName)) {
@@ -141,7 +172,7 @@ function showWelcome() {
  * Function resetting the notebook library. 
  * Primarily used for testing.
  */
- function resetLibrary() {
+function resetLibrary() {
     try {
         let data = MT.getStaticData(ns, "/public/server/data/userguide.json");
         MT.setLibProperty("notebooks", data, ns);
@@ -161,7 +192,7 @@ function loadSetup() {
         let data = MT.getLibProperty("settings", ns);
         return data;
     } catch (error) {
-        MT.printException("loadSetup", error);        
+        MT.printException("loadSetup", error);
     }
 }
 MTScript.registerMacro("loadSetup", loadSetup);
@@ -201,16 +232,19 @@ MTScript.registerMacro("resetSettings", resetSettings);
 /**
  * 
  * @param {string} userName - Name of the user.
- * @returns {json} - A json object containing the user preferences. 
+ * @returns {JSON} - A json object containing the user preferences. 
  */
-function getUserPreferences(userName) {
+function getUserPreferences(userName = "") {
     try {
         let userPref = {};
         let raw = MT.getLibProperty("userPreferences", ns);
-
         if (isJson(raw)) {
             let userPreferences = JSON.parse(raw);
-            userPref = userPreferences[userName];
+            if(userName != "") {
+                userPref = userPreferences[userName];
+            } else {
+                userPref = userPreferences;
+            }
         }
         return userPref;
     } catch (error) {
@@ -224,18 +258,18 @@ MTScript.registerMacro("getUserPreferences", getUserPreferences);
  * @param {string} userName - Name of the user.
  * @param {string} userPreferences - A json object as string containing the user preferences.
  */
-function setUserPreferences(userName, userPref) {
+function setUserPreferences(userName, userPrefs) {
     try {
-        let decodedUserName = decodeURIComponent(userName);
-        let decodedUserPref = decodeURIComponent(userPref);
+        const playerName = transDecode(userName);
+        const userPref = transDecode(userPrefs);
+        let userPreferences = getUserPreferences();
+        let usersPrefs = userPreferences[playerName];
 
-        let userPreferences = {};
-        let raw = MT.getLibProperty("userPreferences", ns);
-        if (raw != "") {
-            userPreferences = JSON.parse(raw);
+        const keys = Object.keys(userPref);
+        for(let key of keys) {
+            usersPrefs[key] = userPref[key];
         }
-        let json = JSON.parse(decodedUserPref);
-        userPreferences[decodedUserName] = json;
+        userPreferences[playerName] = usersPrefs;
         MT.setLibProperty("userPreferences", userPreferences, ns);
     } catch (error) {
         MT.printException("setUserPreferences", error);

@@ -15,6 +15,14 @@ class MT {
 
 
     /**
+     * Returns true if the player is GM, otherwise false.
+     * @returns {boolean} 
+     */
+    static isGM() {
+        return Number(MTScript.evalMacro("[r:isGM()]")) == 1;
+    }
+
+    /**
      * Returns information about the library associated with the supplied namespace.
      * @param {string} ns - Namespace of the library.
      * @returns {json} Object with library info.
@@ -81,7 +89,7 @@ class MT {
      * Formats and prints a message to the chat window.
      * @param {string} message - The message to print.
      */
-    static printMessage = (message) => MapTool.chat.broadcast(`<div style="border: 2px solid #444; background: #ccc">${message}</div>`);
+    static printMessage = (message) => MapTool.chat.broadcast(`<pre>${message}</pre>`);
 
 
     /**

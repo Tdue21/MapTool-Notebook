@@ -1,19 +1,23 @@
 /**
  * Show Book model
- * This class is responsible for the current notebook
- * data.
- * @class
+ * This class is responsible for the current notebook data.
  */
-class ShowBookModel extends AbstractBaseModel {
-    /**
-     * Intializes the ShowBookModel object.
-     */
+class ShowBookModel {
     constructor() {
-        super();
-
         MapTool.getUserData().then(
-            (d) => this._parseData(d),
+            (d) => {
+                this._parseData(d);
+                this._connected(this);
+            },
             (e) => this._connectFailed(e));
+    }
+
+
+    onConnect() {
+        return new Promise((resolve, reject) => {
+            this._connected = resolve;
+            this._connectFailed = reject;
+        });
     }
 
 
@@ -26,11 +30,13 @@ class ShowBookModel extends AbstractBaseModel {
             let decoded = atob(rawData);
             let data = JSON.parse(decoded);
 
-            this.title = data.title;
-            this.summary = data.summary;
-            this.owner = data.owner;
-            this.private = data.private;
-            this.accent = data.accent;
+            this.bookData = {
+                "title": data.title,
+                "summary": data.summary,
+                "owner": data.owner,
+                "private": data.private,
+                "accent": data.accent
+            };
             this.pages = data.pages;
 
             for (let page of this.pages) {
@@ -50,7 +56,6 @@ class ShowBookModel extends AbstractBaseModel {
         } catch (error) {
             logError("Error parsing book", error);
         }
-        this._connected(this);
     }
 
     /**
@@ -63,8 +68,13 @@ class ShowBookModel extends AbstractBaseModel {
         if (page) {
             return page.content;
         } else {
-            return "Undefined :(";
+            return "Undefined page. Something went wrong, sorry :(";
         }
+    }
+
+
+    editBook() {
+        console.log(this.bookData.title);
     }
 }
 
@@ -72,35 +82,24 @@ class ShowBookModel extends AbstractBaseModel {
 /**
  * 
  */
-class ShowBookView extends AbstractBaseView {
+class ShowBookView {
     _pages = [];
-    _root;
-    _bookTitle;
-    _summaryEntry;
-    _indexPanel;
-    _pageIndex;
-    _pagePanel;
-    _accent;
-    _summary;
-    _ownerSpan;
 
     constructor() {
-        super();
-
         try {
             this._root = document.documentElement;
+            this._vh = new ViewHelpers();
 
-            this._bookTitle = document.getElementById("bookTitle");
-            this._summaryEntry = document.getElementById("summaryEntry");
-            this._ownerSpan = document.getElementById("footerOwner");
-            this._indexPanel = document.getElementById("indexPanel");
-            this._pageIndex = document.getElementById("pageIndex");
-            this._pagePanel = document.getElementById("pagePanel");
+            this.editBookClicked = new EventManager();
+            this.pageLinkClicked = new EventManager();
 
-            this._goFirst = document.getElementById("go-first");
-            this._goPrev = document.getElementById("go-prev");
-            this._goNext = document.getElementById("go-next");
-            this._goLast = document.getElementById("go-last");
+            this._bookTitle = this._vh.getElement("#bookTitle");
+            this._summaryEntry = this._vh.getElement("#summaryEntry");
+            this._ownerSpan = this._vh.getElement("#footerOwner");
+            this._indexPanel = this._vh.getElement("#indexPanel");
+            this._pageIndex = this._vh.getElement("#pageIndex");
+            this._pagePanel = this._vh.getElement("#pagePanel");
+            this._editBook = this._vh.getElement("#editBook");
         } catch (error) {
             logMessage("view ctor", error);
         }
@@ -108,19 +107,16 @@ class ShowBookView extends AbstractBaseView {
 
     /**
      * 
-     * @param {string} title 
-     * @param {string} summary 
-     * @param {string} owner 
-     * @param {string} accent 
+     * @param {JSON} bookData 
      * @param {JSON} pages 
-     * @param {Function} clickHandler 
      */
-    initialize(title, summary, owner, accent, pages, clickHandler) {
+    initialize(bookData, pages) {
         try {
-            this._bookTitle.innerText = title;
-            this._ownerSpan.innerText = owner;
-            this._summary = summary;
-            this._accent = accent != "" ? accent : "#a8a5ca";
+            this._bookTitle.innerText = bookData.title;
+            this._ownerSpan.innerText = bookData.owner;
+            this._summary = bookData.summary;
+            this._accent = bookData.accent != "" ? bookData.accent : "#a8a5ca";
+            this._pagePanel.innerHTML = this._summary;
 
             let tc = tinycolor(this._accent);
 
@@ -139,26 +135,24 @@ class ShowBookView extends AbstractBaseView {
             this._root.style.setProperty('--accent-hover-fg', hfg);
             this._root.style.setProperty('--accent-active-fg', afg);
 
-            pages.forEach(page => this._createPageLink(page.name, clickHandler));
+            pages.forEach(page => this._createPageLink(page.name));
 
-            this._summaryEntry
-                .addEventListener("click",
-                    () => this._pagePanel.innerHTML = this._summary);
+            this._summaryEntry.addEventListener("click", () => this._pagePanel.innerHTML = this._summary);
+            this._editBook.addEventListener("click", () => this.editBookClicked.trigger());
 
         } catch (error) {
             logError("set accent", error);
         }
     }
 
-    _createPageLink(pageName, clickHandler) {
+    _createPageLink(pageName) {
         try {
-            let link = this.createElement("span", {
+            let link = this._vh.createElement("span", {
                 id: btoa(pageName),
                 innerText: pageName
             });
-            link.addEventListener("click", event => clickHandler(event.target.id));
-
-            let div = this.createElement("div", { className: "entry" });
+            link.addEventListener("click", event => this.pageLinkClicked.trigger(event.target.id));
+            let div = this._vh.createElement("div", { className: "entry" });
             div.appendChild(link);
 
             let item = document.createElement("li");
@@ -182,20 +176,26 @@ class ShowBookView extends AbstractBaseView {
 /**
  * 
  */
-class ShowBookController extends AbstractBaseController {
+class ShowBookController {
+
+    constructor(model, view) {
+        this._model = model;
+        this._view = view;
+
+        this._model.onConnect().then(
+            (d) => this._onControllerConnected(d),
+            (e) => logError("controller.onConnect", e)
+        );
+    }
 
     /**
      * 
      * @param {ShowBookModel} model - The connected model.
      */
     _onControllerConnected(model) {
-
-        this._view.initialize(model.title,
-            model.summary,
-            model.owner,
-            model.accent,
-            model.pages,
-            this._pageClickHandler);
+        this._view.initialize(model.bookData, model.pages);
+        this._view.pageLinkClicked.addListener(id => this._pageClickHandler(id));
+        this._view.editBookClicked.addListener(() => this._model.editBook());
     }
 
     _pageClickHandler = (data) => {
@@ -209,7 +209,4 @@ class ShowBookController extends AbstractBaseController {
     }
 }
 
-/**
- * 
- */
-const app = new ShowBookController(new ShowBookModel(), new ShowBookView());
+new ShowBookController(new ShowBookModel(), new ShowBookView());

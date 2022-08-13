@@ -2,20 +2,31 @@
  * Library Model
  * This class handles business logic for the library of notebooks. 
  */
-class LibraryModel extends AbstractBaseModel {
+class LibraryModel {
     _noteBooks = [];
-    _userPrefs = {};
-    _macro = `[r:json.set("{}", "isGM", isGM(), 
-                                "playerName", getPlayerName(), 
-                                "userPrefs", js.getUserPreferences(getPlayerName()), 
-                                "notebooks", getLibProperty("notebooks"))]`;
+    _asFrame = {};
+
+    constructor() {
+        MapTool.getUserData().then(
+            (d) => {
+                this._dataLoaded(d);
+                this._connected(this);
+            },
+            (e) => this._connectFailed(e));
+    }
+
 
     /**
-     * Handles instantiation logic for the model. 
+     * Must be called immediately after creating the model object. It will 
+     * resolve the asynchronous data look up needed for the overlay logic.
+     * @returns {Promise} - A Promise object that will be resolved when 
+     * the model is finished loading data.
      */
-    constructor() {
-        super();
-        evaluateMacro(this._macro, (data) => this._performInitialization(JSON.parse(data)));
+    onConnect() {
+        return new Promise((resolve, reject) => {
+            this._connected = resolve;
+            this._connectFailed = reject;
+        });
     }
 
 
@@ -23,10 +34,12 @@ class LibraryModel extends AbstractBaseModel {
      * Initialization callback for model contructor.
      * @param {JSON} data - Data object for model initialization.
      */
-    _performInitialization(data) {
+    _dataLoaded(d) {
         try {
+            const data = transDecode(d);
+
             this._playerName = data.playerName;
-            this._userPrefs = data.userPrefs;
+            this._asFrame = data.asFrame === "true";
 
             for (let item of data.notebooks) {
                 if (!item.private || (item.private && (data.isGM || this._playerName === item.owner))) {
@@ -42,27 +55,10 @@ class LibraryModel extends AbstractBaseModel {
         }
     }
 
-    getUserPreference(name) {
-        try {
-            let value = this._userPrefs[name];
-            return value;
-        } catch (error) {
-            logError("getUserPreference", error);
-        }
-    }
-
-    setUserPreference(name, value) {
-        try {
-            this._userPrefs[name] = value;
-            let userPrefs = JSON.stringify(this._userPrefs);
-            const macro = `[h:userName='${encodeURIComponent(this._playerName)}']
-            [h:userPrefs='${encodeURIComponent(userPrefs)}']
-            [h:js.setUserPreferences(userName, userPrefs)]`;
-            evaluateMacro(macro);
-
-        } catch (error) {
-            logError("setUserPreference", error);
-        }
+    get asFrame() { return this._asFrame; }
+    set asFrame(value) { 
+        this._asFrame = !!(value); 
+        setUserPreference(this._playerName, "asFrame", this._asFrame);
     }
 
     /**
@@ -75,7 +71,7 @@ class LibraryModel extends AbstractBaseModel {
             let title = {
                 "title": item.title,
                 "summary": item.summary,
-                "private": item.private,
+                "private": !!(item.private),
                 "owner": item.owner,
                 "accent": item.accent
             };
@@ -90,7 +86,9 @@ class LibraryModel extends AbstractBaseModel {
      * @param {*} title 
      * @returns 
      */
-    getNoteBook = (title) => this._noteBooks.find(element => element.title === title);
+    getNoteBook = (title) => {
+        return this._noteBooks.find(element => element.title === title);
+    };
 
 
     /**
@@ -114,28 +112,40 @@ class LibraryModel extends AbstractBaseModel {
 
 
 
-/**
- * Library View
+/*
+ * description of view's purpose.
  */
-class LibraryView extends AbstractBaseView {
-    
-    /**
-     * Constructor of the library view class.
-     */
+class LibraryView {
     constructor() {
-        super();
+        try {
 
-        this._asFrameCheckBox = document.getElementById("frame");
-        this._booksList = document.getElementById("booksList");
+            this._vh = new ViewHelpers();
+            this.bookClicked = new EventManager();
+            this.asFrameClicked = new EventManager();
+
+            this._booksList = this._vh.getElement("#booksList");
+            this._asFrame = this._vh.getElement("#frame");
+
+            this._asFrame.addEventListener("change", event => {
+                this.asFrameClicked.trigger(event.target.checked);
+            });
+        } catch (error) {
+            logError("view.ctor", error);
+        }
     }
 
+    get asFrame() { 
+        return this._asFrame.checked; 
+    }
+    set asFrame(value) {
+        this._asFrame.checked = value;
+    }
 
     /**
      * Initializes the view from a list of book items and a click handler
      * @param {JSON[]} items - List of json objects representing books.
-     * @param {Function} handler - Button click handler.
      */
-    initialize(items, handler) {
+    initializeBooksList(items) {
         try {
             if (items == undefined) {
                 logError("Unable to build view.");
@@ -143,56 +153,46 @@ class LibraryView extends AbstractBaseView {
             }
 
             for (let item of items) {
-                this._createBookButton(item, handler);
+                this._createBookButton(item);
             }
         } catch (error) {
-            logError("Initialize", error);
+            logError("initializeBooksList", error);
         }
     }
 
-
-    /**
-     * 
-     * @param {boolean} doSet - True if the notebook should open in a frame, otherwise a dialog. 
-     */
-    setAsFrame(doSet) {
+    setAsFrame(isChecked) {
         try {
-            this._asFrameCheckBox.checked = doSet;
+            this._asFrame.checked = isChecked;
         } catch (error) {
             logError("setAsFrame", error);
         }
     }
 
-    /**
-     * Defines the onChange event listener on the asFrame cbeckbox.
-     * @param {Function} handler - onChange handler for the asFrame checkbox.
-     */
-    bindAsFrameChecked(handler) {
-        this._asFrameCheckBox.addEventListener('change', event => {
-            handler(event.target.checked);
-        });
-    }
+
 
     /**
      * Creates a book button based on the supplied json object and onClick event handler.
      * @param {JSON} item - A book object with necessary data.
-     * @param {Function} handler - onClick handler for the book button.
      */
-    _createBookButton(item, handler) {
+    _createBookButton(item) {
         try {
             // Create the button
-            let button = this.createElement("button", {
+            let button = this._vh.createElement("button", {
                 id: btoa(item.title),
                 className: "button",
                 title: decodeURIComponent(item.summary)
             });
+
             button.addEventListener("click", event => {
-                handler(event.currentTarget.id, this._asFrameCheckBox.checked ? 1 : 0);
+                this.bookClicked.trigger({
+                    "id": event.currentTarget.id,
+                    "asFrame": this._asFrame.checked ? 1 : 0
+                });
             });
 
 
             // Create the text for button
-            let content = this.createElement("p", {
+            let content = this._vh.createElement("p", {
                 style: `--accent-bg:${item.accent}`,
                 className: "accent",
                 innerText: decodeURIComponent(item.title)
@@ -202,7 +202,7 @@ class LibraryView extends AbstractBaseView {
 
             // Lock image if book is private
             if (item.private == "true") {
-                let image = this.createElement("img", {
+                let image = this._vh.createElement("img", {
                     src: "./images/key.png",
                     title: `Owner: ${item.owner}`,
                     width: "16px",
@@ -212,7 +212,7 @@ class LibraryView extends AbstractBaseView {
 
 
             // Create list item and add button.
-            let listItem = document.createElement("li");
+            let listItem = this._vh.createElement("li");
             listItem.appendChild(button);
             this._booksList.appendChild(listItem);
 
@@ -226,43 +226,46 @@ class LibraryView extends AbstractBaseView {
 /**
  * 
  */
-class LibraryController extends AbstractBaseController {
+class LibraryController {
+
+    constructor(model, view) {
+        try {
+            this._model = model;
+            this._view = view;
+
+            this._model.onConnect().then(
+                (d) => this._onControllerConnected(d),
+                (e) => this._handleConnectionError(e));
+        } catch (error) {
+            logError("baseCtrl.ctor", error);
+        }
+    }
+
+
     /**
      * 
      * @param {LibraryModel} model - The library model object
      */
     _onControllerConnected(model) {
+        try {
+            this._view.asFrame = model.asFrame;
+            this._view.initializeBooksList(model.listTitles());
 
-        let asFrame = model.getUserPreference("asFrame") == "true";
-        let titles = model.listTitles();
+            this._view.bookClicked.addListener(args => {
+                this._model.openBook(args.id, args.asFrame);
+            });
 
-        this._view.setAsFrame(asFrame);
-        this._view.initialize(titles, this._openBookHandler);
-        this._view.bindAsFrameChecked(this._openAsFrameHandler);
+            this._view.asFrameClicked.addListener(isChecked => {
+                this._model.asFrame = isChecked;
+            });
+        } catch (error) {
+            logError("controller.ctor", error);
+        }
     }
 
-
-    /**
-     * openBook handler connecting view and model.
-     * @param {string} id - Id of the book being opened.
-     * @param {Boolean} asFrame - Whether the book should opened in a frame or dialog.
-     */
-    _openBookHandler = (id, asFrame) => { this._model.openBook(id, asFrame); }
-
-
-    /**
-     * Saves the user's 'asFrame' preference
-     * @param {boolean} isChecked - Value of the asFrame reference
-     */
-    _openAsFrameHandler = (isChecked) => { this._model.setUserPreference("asFrame", isChecked); }
+    _handleConnectionError(error) {
+        logError(`${this.constructor.name}.onConnected`, error);
+    }
 }
 
-
-/**
- * 
- */
-try {
-    new LibraryController(new LibraryModel(), new LibraryView());
-} catch (error) {
-    logError("Library initialization error", error);
-}
+new LibraryController(new LibraryModel(), new LibraryView());
