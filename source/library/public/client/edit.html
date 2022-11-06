@@ -3,42 +3,89 @@
 
 <head>
     <link rel="stylesheet" type="text/css" href="./css/common.css?cachelib=false">
+    <link rel="stylesheet" type="text/css" href="./css/tooltip.css?cachelib=false">
     <link rel="stylesheet" type="text/css" href="./css/edit.css?cachelib=false">
 
     <script defer src="./js/toolcool-color-picker.min.js?cachelib=false"></script>
+    <script defer src="./js/mocks/editMocks.js?cachelib=false"></script>
     <script defer src="./js/mvc.js?cachelib=false"></script>
     <script defer src="./js/jsUtils.js?cachelib=false"></script>
     <script defer src="./js/edit.js?cachelib=false"></script>
-    
-    
-    <style type="text/css">
-    </style>
 </head>
 
 <body>
-    <table>
-        <caption id="caption">Create notebook</caption>
-        <tr>
-            <td><label for="bookTitle">Title</label></td>
-            <td><input type="text" id="bookTitle" placeholder="Title of notebook"></td>
-        </tr>
-        <tr>
-            <td><label for="bookSummary">Summary</label></td>
-            <td><input type="text" id="bookSummary" placeholder="Short summary of notebook"></td>
-        </tr>
-        <tr>
-            <td><label for="private">Private</label></td>
-            <td><input type="checkbox" id="private"></td>
-        </tr>
-        <tr>
-            <td><label for="colorPicker">Accent</label></td>
-            <td><toolcool-color-picker id="colorPicker" color="#8AA6ED"></toolcool-color-picker></td>
-        </tr>
-    </table>
-    <table id="pageList">
-        <caption>Pages</caption>
-        <tr><td colspan="3"><button>New page</button></td></tr>
-    </table>
+
+    <div id="body">
+        <div id="bookPart">
+            <div id="commandBar">
+                <Button id="saveBook">Save</Button>
+                <Button id="cancelChanges">Cancel</Button>
+                <button id="addPage">Add Page</button>
+                <button id="deletePage">Delete Page</button>
+                
+                <a class="tooltip" href="#">
+                    <span class="tooltip-dynamic-bottom">
+                        <b style="font-size:1.2em">Quick Help</b><br>
+                        # Heading 1<br>
+                        ## Heading 2<br>
+                        ### Heading 3<br>
+                        <hr>
+                        *Italic*<br>
+                        **Bold**<br>
+                        ~~Strikethrough~~<br>
+                        <hr>
+                        [Link Text](Link url)<br>
+                        ![Alt Text](Image url)<br>
+                    </span>
+                    Help</a>
+
+                <Button id="deleteBook" style="border: 2px solid red; position: fixed;right:15px;border-radius: 3px;">Delete Book</Button>
+            </div>
+
+            <h2 style="margin-top:8px"><span id="bookCaption">Create notebook</span></h2>
+            <div id="bookInfo">
+                <div>
+                    <label for="bookTitle">Title</label>
+                    <input type="text" id="bookTitle" placeholder="Title of notebook">
+                </div>
+
+                <div>
+                    <label for="bookSummary">Summary</label>
+                    <textarea id="bookSummary" placeholder="Short summary of notebook"></textarea>
+                </div>
+
+                <div>
+                    <label for="pages">Select page</label>
+                    <select id="pages"></select>
+                </div>
+            </div>
+
+            <div id="bookMisc">
+                <label for="private">Private</label>
+                <input type="checkbox" id="private" style="margin-right:50px">
+
+                <label for="colorPicker">Accent</label>
+                <div style="display: inline-block;">
+                    <toolcool-color-picker id="colorPicker" popup-position="right" color="#8AA6ED"></toolcool-color-picker>
+                </div>
+            </div>
+
+        </div>
+        <div id="pagePart">
+            <h4 style="margin-top:6px;margin-bottom:3px">
+                <span id="pagesCaption">Edit Page</span>
+            </h4>
+
+            <div id="currentPageContent">
+                <div>
+                    <label for="pageTitle">Page Title</label>
+                    <input type="text" id="currentPageName">
+                </div>
+
+                <textarea id="currentPageText"></textarea>
+            </div>
+        </div>
+    </div>
 </body>
 
 </html>

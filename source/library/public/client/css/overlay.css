@@ -41,12 +41,12 @@ img:hover {
 	display: block; 
 	margin:0px;
 	padding:0px;
-	margin-left:1px;
+	margin-left:6px;
 	margin-top:-5px;
 }
 #quill {
-	width:64px;
-	height:64px;
+	width:48px;
+	height:48px;
 	margin-left:10px;
 }
 

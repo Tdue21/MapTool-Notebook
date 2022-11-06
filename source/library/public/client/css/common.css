@@ -8,6 +8,13 @@
     --header-font: 'Alegreya Sans SC', sans-serif;
 }
 
+html {
+    margin: 0px;
+    padding: 0px;
+    height: 100%;
+    width: 100%;  
+}
+
 body {
     font-size: 14px;
     font-family: var(--body-font);
@@ -16,6 +23,8 @@ body {
     background-color: #ffffff;
     margin: 0px;
     padding: 0px;
+    height: 100%;
+    width: 100%;
     -webkit-font-smoothing:antialiased;
     -moz-osx-font-smoothing: grayscale;
 }
@@ -73,6 +82,17 @@ h6 {
     font-size: 1.1em;
 }
 
+button {
+    width: 100px;
+}
+
+input[type="text"], textarea {
+    margin: 0px;
+    margin-top: 2px;
+    margin-bottom: 2px;
+    padding: 0px;
+}
+
 .language-div {
     padding: 5px;
     margin: 10px;
@@ -108,7 +128,7 @@ hr .softline {
     overflow: hidden;
     box-sizing: content-box;
 }
-
+/*
 .tooltip {
     position: relative;
     display: inline-block;
@@ -135,3 +155,4 @@ hr .softline {
 .tooltip:hover .tooltiptext {
     visibility: visible;
 }
+*/

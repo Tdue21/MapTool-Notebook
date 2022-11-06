@@ -45,6 +45,9 @@ function logError(message, error = undefined) {
  */
 const logMessage = (message) => MapTool.log(message); 
 
+const logJson = (json) => {
+    evaluateMacro(`[h:data='${JSON.stringify(json)}'][h:broadcast("<pre>" + json.indent(data) + "</pre>")]`);
+}
 
 /**
  * 

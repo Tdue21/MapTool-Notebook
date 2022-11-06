@@ -45,7 +45,7 @@ class OverlayModel {
     /**
      * Calls the server side logic for displaying the library frame. 
      */
-    openLibrary = () => {
+    openLibrary() {
         evaluateMacro("[h:js.showLibrary()]");
     };
 
@@ -53,8 +53,8 @@ class OverlayModel {
     /**
      * Calls the server side logic for displaying the edit book dialog. 
      */
-    addBook = () => {
-        evaluateMacro("[h:js.addBook()]");
+    addBook() {
+        evaluateMacro(`[h:js.editBook("")]`);
     }
 
 

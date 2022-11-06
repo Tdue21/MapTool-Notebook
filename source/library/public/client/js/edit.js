@@ -1,6 +1,3 @@
-/*
- * description of model's purpose.
- */
 class EditBookModel {
     constructor() {
         MapTool.getUserData().then(
@@ -11,9 +8,7 @@ class EditBookModel {
             (e) => this._connectFailed(e));
     }
 
-    /*
-     * onConnected must be called first to ensure model has loaded its data.
-     */
+
     onConnect() {
         return new Promise((resolve, reject) => {
             this._connected = resolve;
@@ -21,44 +16,95 @@ class EditBookModel {
         });
     }
 
-    /*
-     * Implement this method to handle the userData received in the constructor.
-     */
+
     _dataLoaded(data) {
-        this.bookData = transDecode(data);
+        try {
+            this.metaData = transDecode(data);
+        } catch (error) {
+            logError("model.dataLoad", error);
+        }
+    }
+
+
+    addPage() {
+        this.metaData.pages.push({"name": "New page", "content":""});
+    }
+
+
+    deletePage(pageName) {
+
     }
 }
 
 
-/*
- * description of view's purpose.
- */
 class EditBookView {
     constructor() {
-        this._vh = new ViewHelpers();
+        let _vh = new ViewHelpers();
 
-        this._bookTitle = this._vh.getElement("#bookTitle");
-        this._bookSummary = this._vh.getElement("#bookSummary");
-        this._private = this._vh.getElement("#private");
-        this._colorPicker = this._vh.getElement("#colorPicker");
+        this.saveBookClicked = new EventManager();
+        this.cancelChangesClicked = new EventManager();
+        this.addPageClicked = new EventManager();
+        this.deletePageClicked = new EventManager();
+        this.deleteBookClicked = new EventManager();
+        this.selectedPageChanged = new EventManager();
+
+        this._pageCaption = _vh.getElement("#bookCaption");
+        
+        this._bookTitle = _vh.getElement("#bookTitle");
+        this._bookSummary = _vh.getElement("#bookSummary");
+        this._private = _vh.getElement("#private");
+        this._colorPicker = _vh.getElement("#colorPicker");
+        this._pageSelector = _vh.getElement("#pages");
+
+        this._currentPageName = _vh.getElement("#currentPageName");
+        this._currentPageText = _vh.getElement("#currentPageText");
+        this._oldPageName = this._currentPageName.value;
+     
+        _vh.setupEventListener("#saveBook",      "click",  this.saveBookClicked);
+        _vh.setupEventListener("#cancelChanges", "click",  this.cancelChangesClicked);
+        _vh.setupEventListener("#addPage",       "click",  this.addPageClicked);
+        _vh.setupEventListener("#deletePage",    "click",  this.deletePageClicked);
+        _vh.setupEventListener("#deleteBook",    "click",  this.deleteBookClicked);
+        _vh.setupEventListener("#pages",         "change", this.selectedPageChanged);
     }
 
-    /*
-     * Implement this method for view initialization.
-     */
     initialize(bookData) {
-        this._bookTitle.value = bookData.title;
-        this._bookSummary.value = bookData.summary;
-        this._private.checked = bookData.private === "true";
-        this._colorPicker.color = bookData.accent;
+        if (bookData.book.title == "") {
+            document.title = "Create notebook";
+            this._pageCaption.innerText = "Create notebook";
+            this._private.checked = false;
+            this._colorPicker.color = "#a7d0ee";
+            return;
+        }
 
+        document.title = "Edit notebook";
+        this._pageCaption.innerText = "Edit notebook";
+        this._bookTitle.value = bookData.book.title;
+        this._bookSummary.value = bookData.book.summary;
+        this._private.checked = bookData.book.private === "true";
+        this._colorPicker.color = bookData.book.accent;
     }
+
+    get bookTitle() { return this._bookTitle.value; }
+    set bookTitle(value) { this._bookTitle.value = value; }
+
+    get bookSummary() { return this._bookSummary.value; }
+    set bookSummary(value) { this._bookSummary.value = value; }
+
+    get isPrivate() { return this._private.value; }
+    set isPrivate(value) { this._private.checked = value; }
+
+    get accentColor() { return this._colorPicker.color; }
+    set accentColor(value) { this._colorPicker.color = value; }
+
+    get currentPageName() { return this._currentPageName.value; }
+    set currentPageName(value) { this._currentPageName.value = value; }
+
+    get currentPageText() { return this._currentPageText.value; }
+    set currentPageText(value) { this._currentPageText.value = value; }
 }
 
 
-/*
- * description of controller's purpose.
- */
 class EditBookController {
     constructor(model, view) {
         this._model = model;
@@ -68,12 +114,38 @@ class EditBookController {
             (e) => this._handleConnectionError(e));
     }
 
-    /*
-     * Implement this method for controller initialization.
-     */
+
     _onControllerConnected(model) {
-        this._view.initialize(model.bookData);
-    }
+        logMessage(JSON.stringify(model.metaData));
+        this._view.initialize(model.metaData);
+
+        this._view.addPageClicked.addListener(() => {
+            this._model.AddPage();
+
+        });
+
+        this._view.deletePageClicked.addListener(() => {
+            if(confirm("Are you sure you wish to delete this page?")) {
+                this._model.deletePage(this._view.se);
+            }
+        });
+
+        this._view.selectedPageChanged.addListener(() => {
+
+        });
+
+        this._view.saveBookClicked.addListener(() => {
+            
+        });
+
+        this._view.cancelChangesClicked.addListener(() => {
+            
+        });
+
+        this._view.deleteBookClicked.addListener(() => {
+            
+        });
+   }
 
     _handleConnectionError(error) {
         console.log("Error: " + error.message);
@@ -81,50 +153,3 @@ class EditBookController {
 }
 
 new EditBookController(new EditBookModel(), new EditBookView());
-
-/*
-(async () => {
-    try {
-        let data = await getEditNotebookArgs();
-        let noteName = decodeURI(data.name);
-        let caption = document.getElementById("caption");
-        if (noteName == "new") {
-            caption.innerText = "Create Notebook";
-            return;
-        }
-
-        caption.innerText = "Edit Notebook - " + noteName;
-        data = await getNotebookData(noteName);
-
-        let bookData = {
-            name: noteName,
-            summary: data.summary,
-            owner: data.owner,
-            private: data.private
-        };
-
-        dataBind("name", "value", bookData)
-        dataBind("summary", "value", bookData)
-        dataBind("private", "checked", bookData)
-
-        const table = document.getElementById("pageList");
-        let pageList = table.innerHTML;
-
-        let keys = Object.keys(data.pages);
-
-        for(let key of keys) {
-            let page = data.pages[key];
-            console.log(`${key} == ${page}`);
-            let pageData = `<tr><td>${key}</td>
-                <td><img src="../images/edit.png"></td>
-                <td><img src="../images/delete.png"></td>
-                </tr>`;
-            pageList += pageData;
-        }
-        table.innerHTML = pageList;
-
-    } catch (error) {
-        console.log("Error: " + error + "\r\n" + error.stack)
-    }
-})();
-*/

@@ -35,7 +35,8 @@ class ShowBookModel {
                 "summary": data.summary,
                 "owner": data.owner,
                 "private": data.private,
-                "accent": data.accent
+                "accent": data.accent,
+                "pages": data.pages
             };
             this.pages = data.pages;
 
@@ -74,7 +75,13 @@ class ShowBookModel {
 
 
     editBook() {
-        console.log(this.bookData.title);
+        const closeData = {
+            "kind": MapTool.getKind(),
+            "name": MapTool.getName(),
+            "book": this.bookData
+        };
+        evaluateMacro(`[h:js.closeNotebook("${transEncode(closeData)}")]`);
+        evaluateMacro(`[h:js.editBook("${transEncode(closeData)}")]`);
     }
 }
 

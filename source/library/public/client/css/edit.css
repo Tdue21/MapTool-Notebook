@@ -1,44 +1,58 @@
-table {
-    width: 100%;
-    margin: 10px;
-    padding: 0px;
-    border-collapse: collapse;
+body {overflow:hidden}
+
+#body {
+    padding: 10px;
+    height: calc(100% - 20px);
+    width: calc(100% - 20px);
 }
 
-td:first-child {
-    width: 150px;
+#bookInfo {
+    width:calc(100% - 150px);
+    margin:0px;
+    padding:0px;
+    margin-bottom:3px;
+    display:inline-block; 
 }
 
-tr,
-td {
-    margin: 0px;
-    padding: 0px;
+#bookMisc {
+    width:120px;
     text-align: left;
-    vertical-align: middle;
-    height: 25px;
+    display:inline-block; 
+    vertical-align: top;
 }
 
-tr:nth-child(even) {
-    background-color: #f4f4f4;
+
+#pagePart {
+    height:calc(100% - 180px);
 }
 
-button {
+#currentPageContent div>label,
+#bookInfo div>label {
+    display: inline-block;
     width: 100px;
+    margin-right:5px;
+    vertical-align: top;
 }
 
-select,
-input[type=text] {
-    margin: 0px;
-    margin-top: 2px;
-    margin-bottom: 2px;
-    padding: 0px;
-    width: 95%;
+#bookInfo div > [type="text"],
+#bookInfo div > select,
+#bookInfo div > textarea,
+
+#currentPageContent div>[type="text"] {
+    display: inline-block;
+    width: calc(100% - 115px);
+    text-align: left;
 }
 
-textarea {
+#currentPageContent {
+    width: 100%;
+    height: calc(100% - 50px);
+}
+
+#currentPageText {
     margin-top: 2px;
     margin-bottom: 2px;
-    min-height: 100px;
-    width: 95%;
+    height:calc(100% - 30px);
+    width: calc(100% - 10px);
 
 }

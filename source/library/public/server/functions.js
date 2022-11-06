@@ -30,7 +30,7 @@ MTScript.registerMacro("transDecode", transDecode);
 function showAbout() {
     try {
         let data = MT.getLibraryInfo(ns);
-        let options = getDialogOptions(400, 380, data.version);
+        let options = getDialogOptions(400, 450, data.version);
         MT.showDialog("About", `lib://${ns}/client/about.html`, options);
     } catch (error) {
         MT.printException("showAbout", error);
@@ -121,6 +121,43 @@ function showNotebook(data, asFrame = 0) {
 }
 MTScript.registerMacro("showNotebook", showNotebook);
 
+function closeNotebook(data) {
+    try {
+        const bookData = transDecode(data);
+        if(bookData.kind == "frame5") {
+            MT.closeFrame(bookData.name);
+        } else if(bookData.kind == "dialog5") {
+            MT.closeDialog(bookData.name);
+        }
+    } catch (error) {
+        MT.printException("closeNotebook", error);
+    }
+}
+MTScript.registerMacro("closeNotebook", closeNotebook);
+
+
+/**
+ * 
+ * @param {string} data - transEncoded book data.
+ */
+function editBook(data = "") {
+    const bookData = data !== "" ? transDecode(data) : { "kind": "", "name": "", "title":"", "owner": MT.getPlayerName()};
+    const notebooks = JSON.parse(MT.getLibProperty("notebooks", ns));
+    const notebook = bookData.title !== "" ? notebooks[bookData.title] : {
+        "title": "",
+        "summary": "",
+        "owner": bookData.owner,
+        "private": false,
+        "accent": "#cccccc",
+        "readonly": false,
+        "pages":[]
+    };
+    bookData["book"] = notebook;
+
+    let options = getDialogOptions(600, 800, transEncode(bookData));
+    MT.showDialog(`Edit Book`, `lib://${ns}/client/edit.html`, options);
+}
+MTScript.registerMacro("editBook", editBook);
 
 /**
  * 
@@ -166,6 +203,7 @@ function showWelcome() {
         MT.printException("showWelcome", error);
     }
 }
+MTScript.registerMacro("showWelcome", showWelcome);
 
 
 /**
