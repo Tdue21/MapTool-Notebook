@@ -1,6 +1,5 @@
 /**
- * Library Model
- * This class handles business logic for the library of notebooks. 
+ * 
  */
 class LibraryModel {
     _noteBooks = [];
@@ -15,13 +14,6 @@ class LibraryModel {
             (e) => this._connectFailed(e));
     }
 
-
-    /**
-     * Must be called immediately after creating the model object. It will 
-     * resolve the asynchronous data look up needed for the overlay logic.
-     * @returns {Promise} - A Promise object that will be resolved when 
-     * the model is finished loading data.
-     */
     onConnect() {
         return new Promise((resolve, reject) => {
             this._connected = resolve;
@@ -29,11 +21,6 @@ class LibraryModel {
         });
     }
 
-
-    /**
-     * Initialization callback for model contructor.
-     * @param {JSON} data - Data object for model initialization.
-     */
     _dataLoaded(d) {
         try {
             const data = transDecode(d);
@@ -55,16 +42,15 @@ class LibraryModel {
         }
     }
 
-    get asFrame() { return this._asFrame; }
+    get asFrame() { 
+        return this._asFrame; 
+    }
+
     set asFrame(value) { 
         this._asFrame = !!(value); 
         setUserPreference(this._playerName, "asFrame", this._asFrame);
     }
 
-    /**
-     * 
-     * @returns 
-     */
     listTitles() {
         let titles = [];
         for (let item of this._noteBooks) {
@@ -81,21 +67,10 @@ class LibraryModel {
     };
 
 
-    /**
-     * 
-     * @param {*} title 
-     * @returns 
-     */
-    getNoteBook = (title) => {
+    getNoteBook(title) {
         return this._noteBooks.find(element => element.title === title);
-    };
+    }
 
-
-    /**
-     * 
-     * @param {string} item 
-     * @param {number} asFrame
-     */
     openBook(item, asFrame) {
         try {
             let decoded = atob(item);
@@ -110,12 +85,11 @@ class LibraryModel {
     }
 }
 
-
-
-/*
- * description of view's purpose.
+/**
+ * 
  */
 class LibraryView {
+
     constructor() {
         try {
 
@@ -141,10 +115,6 @@ class LibraryView {
         this._asFrame.checked = value;
     }
 
-    /**
-     * Initializes the view from a list of book items and a click handler
-     * @param {JSON[]} items - List of json objects representing books.
-     */
     initializeBooksList(items) {
         try {
             if (items == undefined) {
@@ -168,12 +138,6 @@ class LibraryView {
         }
     }
 
-
-
-    /**
-     * Creates a book button based on the supplied json object and onClick event handler.
-     * @param {JSON} item - A book object with necessary data.
-     */
     _createBookButton(item) {
         try {
             // Create the button
@@ -190,7 +154,6 @@ class LibraryView {
                 });
             });
 
-
             // Create the text for button
             let content = this._vh.createElement("p", {
                 style: `--accent-bg:${item.accent}`,
@@ -198,7 +161,6 @@ class LibraryView {
                 innerText: decodeURIComponent(item.title)
             });
             button.appendChild(content);
-
 
             // Lock image if book is private
             if (item.private == "true") {
@@ -210,7 +172,6 @@ class LibraryView {
                 button.appendChild(image);
             }
 
-
             // Create list item and add button.
             let listItem = this._vh.createElement("li");
             listItem.appendChild(button);
@@ -221,7 +182,6 @@ class LibraryView {
         }
     }
 }
-
 
 /**
  * 
@@ -240,12 +200,7 @@ class LibraryController {
             logError("baseCtrl.ctor", error);
         }
     }
-
-
-    /**
-     * 
-     * @param {LibraryModel} model - The library model object
-     */
+    
     _onControllerConnected(model) {
         try {
             this._view.asFrame = model.asFrame;
@@ -268,4 +223,8 @@ class LibraryController {
     }
 }
 
-new LibraryController(new LibraryModel(), new LibraryView());
+try {
+    new LibraryController(new LibraryModel(), new LibraryView());
+} catch (error) {
+    logError("Global error", error);
+}

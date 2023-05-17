@@ -3,5 +3,5 @@
 [h:js.evalURI(namespace, "lib://" + namespace + "/server/MTShims.js?cachelib=false")]
 [h:js.evalURI(namespace, "lib://" + namespace + "/server/functions.js?cachelib=false")]
 
-[h:js.resetSettings()]
+[h:js.initLibrary()]
 [h:broadcast("onFirstInit loaded")]

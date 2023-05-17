@@ -32,6 +32,9 @@ class EventManager {
 }
 
 
+/**
+ * 
+ */
 class ViewHelpers {
 
     /**

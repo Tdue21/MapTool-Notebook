@@ -1,3 +1,6 @@
+/**
+ * 
+ */
 class EditBookModel {
     constructor() {
         MapTool.getUserData().then(
@@ -36,7 +39,9 @@ class EditBookModel {
     }
 }
 
-
+/**
+ * 
+ */
 class EditBookView {
     constructor() {
         let _vh = new ViewHelpers();
@@ -104,7 +109,9 @@ class EditBookView {
     set currentPageText(value) { this._currentPageText.value = value; }
 }
 
-
+/**
+ * 
+ */
 class EditBookController {
     constructor(model, view) {
         this._model = model;
@@ -152,4 +159,9 @@ class EditBookController {
     }
 }
 
-new EditBookController(new EditBookModel(), new EditBookView());
+
+try {
+    new EditBookController(new EditBookModel(), new EditBookView());
+} catch (error) {
+    logError("Global error", error);
+}

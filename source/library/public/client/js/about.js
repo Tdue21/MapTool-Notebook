@@ -25,7 +25,6 @@ class AboutModel {
     }
 }
 
-
 /**
  * 
  */
@@ -37,7 +36,6 @@ class AboutView {
     get version() { return this.span.innerHTML; }
     set version(value) { this.span.innerHTML = value; }
 }
-
 
 /**
  * 
@@ -55,7 +53,7 @@ class AboutController {
 }
 
 try {
-    const app = new AboutController(new AboutModel(), new AboutView());
+    new AboutController(new AboutModel(), new AboutView());
 } catch (error) {
     logError("Global error", error);
 }

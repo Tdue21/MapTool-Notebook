@@ -1,8 +1,8 @@
 /**
- * Show Book model
- * This class is responsible for the current notebook data.
+ * 
  */
 class ShowBookModel {
+
     constructor() {
         MapTool.getUserData().then(
             (d) => {
@@ -12,7 +12,6 @@ class ShowBookModel {
             (e) => this._connectFailed(e));
     }
 
-
     onConnect() {
         return new Promise((resolve, reject) => {
             this._connected = resolve;
@@ -20,11 +19,6 @@ class ShowBookModel {
         });
     }
 
-
-    /**
-     * Parse the notebook data and presents it for the controller. 
-     * @param {string} rawData - raw data for the notebook. 
-     */
     _parseData(rawData) {
         try {
             let decoded = atob(rawData);
@@ -59,11 +53,6 @@ class ShowBookModel {
         }
     }
 
-    /**
-     * 
-     * @param {*} name 
-     * @returns 
-     */
     getPageContent(name) {
         let page = this.pages.find(page => page.name === name);
         if (page) {
@@ -72,7 +61,6 @@ class ShowBookModel {
             return "Undefined page. Something went wrong, sorry :(";
         }
     }
-
 
     editBook() {
         const closeData = {
@@ -84,7 +72,6 @@ class ShowBookModel {
         evaluateMacro(`[h:js.editBook("${transEncode(closeData)}")]`);
     }
 }
-
 
 /**
  * 
@@ -112,11 +99,6 @@ class ShowBookView {
         }
     }
 
-    /**
-     * 
-     * @param {JSON} bookData 
-     * @param {JSON} pages 
-     */
     initialize(bookData, pages) {
         try {
             this._bookTitle.innerText = bookData.title;
@@ -179,7 +161,6 @@ class ShowBookView {
     }
 }
 
-
 /**
  * 
  */
@@ -195,10 +176,6 @@ class ShowBookController {
         );
     }
 
-    /**
-     * 
-     * @param {ShowBookModel} model - The connected model.
-     */
     _onControllerConnected(model) {
         this._view.initialize(model.bookData, model.pages);
         this._view.pageLinkClicked.addListener(id => this._pageClickHandler(id));
@@ -216,4 +193,8 @@ class ShowBookController {
     }
 }
 
-new ShowBookController(new ShowBookModel(), new ShowBookView());
+try {
+    new ShowBookController(new ShowBookModel(), new ShowBookView());
+} catch (error) {
+    logError("Global error", error);
+}
