@@ -1,4 +1,25 @@
-body {overflow:hidden}
+body {
+    /*overflow:hidden;*/
+    display: flex;
+    justify-content: space-between;
+    padding: 10px;
+    height: calc(100% - 20px);
+    width: calc(100% - 20px);
+}
+
+nav div:last-child {
+    margin-left: auto;
+}
+
+.button {
+    border-radius: 4px;
+    border: 1px solid gray;
+}
+
+#deleteBook {
+    border: 2px solid red; 
+    right:15px;
+}
 
 #body {
     padding: 10px;
@@ -7,11 +28,11 @@ body {overflow:hidden}
 }
 
 #bookInfo {
-    width:calc(100% - 150px);
+    width:100%;
     margin:0px;
     padding:0px;
     margin-bottom:3px;
-    display:inline-block; 
+    flex-direction: column;
 }
 
 #bookMisc {
@@ -20,7 +41,6 @@ body {overflow:hidden}
     display:inline-block; 
     vertical-align: top;
 }
-
 
 #pagePart {
     height:calc(100% - 180px);

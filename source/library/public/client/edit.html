@@ -7,15 +7,73 @@
     <link rel="stylesheet" type="text/css" href="./css/edit.css?cachelib=false">
 
     <script defer src="./js/toolcool-color-picker.min.js?cachelib=false"></script>
-    <script defer src="./js/mvc.js?cachelib=false"></script>
+    <script defer src="./js/eventManager.js?cachelib=false"></script>
     <script defer src="./js/jsUtils.js?cachelib=false"></script>
     <script defer src="./js/edit.js?cachelib=false"></script>
 </head>
 
 <body>
+    <article style="border:1px solid black" id="body">
+        <nav>
+            <button id="saveBook">Save</Button>
+            <button id="cancelChanges">Cancel</Button>
+            <button id="quickHelp" class="tooltip">
+                <span class="tooltip-dynamic-bottom">
+                    <b style="font-size:1.2em">Quick Help</b><br>
+                    # Heading 1<br>
+                    ## Heading 2<br>
+                    ### Heading 3<br>
+                    <hr>
+                    *Italic*<br>
+                    **Bold**<br>
+                    ~~Strikethrough~~<br>
+                    <hr>
+                    [Link Text](Link url)<br>
+                    ![Alt Text](Image url)<br>
+                </span>
+                Help
+            </button>
+            <button id="deleteBook">Delete Book</Button>
+        </nav>
 
+        <h2 style="margin-top:8px"><span id="bookCaption">Create notebook</span></h2>
+
+        <section id="bookInfo">
+            <div>
+                <label for="bookTitle">Title</label>
+                <input type="text" id="bookTitle" placeholder="Title of notebook">
+            </div>
+            <div>
+                <label for="bookSummary">Summary</label>
+                <textarea id="bookSummary" rows="5" placeholder="Short summary of notebook"></textarea>
+            </div>
+            <div>
+                <label for="private">Private</label>
+                <input type="checkbox" id="private" style="margin-right:50px">
+
+                <label for="colorPicker">Accent</label>
+                <div style="display: inline-block;">
+                    <toolcool-color-picker id="colorPicker" popup-position="right"
+                        color="#8AA6ED"></toolcool-color-picker>
+                </div>
+            </div>
+        </section>
+
+        <section>
+            <button id="addPage">Add Page</button>
+            <button id="deletePage">Delete Page</button>
+            <label for="pages">Select page</label>
+            <select id="pages" size="10"></select>
+        </section>
+
+        <footer>
+            <span id="pageWidth"></span>
+        </footer>
+    </article>
+    <!--
     <div id="body">
         <div id="bookPart">
+
             <div id="commandBar">
                 <Button id="saveBook">Save</Button>
                 <Button id="cancelChanges">Cancel</Button>
@@ -38,8 +96,8 @@
                     </span>
                     Help</a>
 
-                <Button id="deleteBook" style="border: 2px solid red; position: fixed;right:15px;border-radius: 3px;">Delete Book</Button>
-            </div>
+                <Button id="deleteBook">Delete Book</Button>
+            </div> 
 
             <h2 style="margin-top:8px"><span id="bookCaption">Create notebook</span></h2>
             <div id="bookInfo">
@@ -50,23 +108,25 @@
 
                 <div>
                     <label for="bookSummary">Summary</label>
-                    <textarea id="bookSummary" placeholder="Short summary of notebook"></textarea>
+                    <textarea id="bookSummary" rows="5" placeholder="Short summary of notebook"></textarea>
                 </div>
 
+                <div>
+                    <label for="private">Private</label>
+                    <input type="checkbox" id="private" style="margin-right:50px">
+                </div>
+
+                <div>
+                    <label for="colorPicker">Accent</label>
+                    <div style="display: inline-block;">
+                        <toolcool-color-picker id="colorPicker" popup-position="right" color="#8AA6ED"></toolcool-color-picker>
+                    </div>
+                </div>
                 <div>
                     <label for="pages">Select page</label>
                     <select id="pages"></select>
                 </div>
-            </div>
 
-            <div id="bookMisc">
-                <label for="private">Private</label>
-                <input type="checkbox" id="private" style="margin-right:50px">
-
-                <label for="colorPicker">Accent</label>
-                <div style="display: inline-block;">
-                    <toolcool-color-picker id="colorPicker" popup-position="right" color="#8AA6ED"></toolcool-color-picker>
-                </div>
             </div>
 
         </div>
@@ -85,6 +145,13 @@
             </div>
         </div>
     </div>
+-->
+
+    <script>
+        addEventListener("resize", (event) => {
+            document.getElementById("pageWidth").innerHTML = "Screen width: " + window.innerWidth;
+        });
+    </script>
 </body>
 
 </html>
